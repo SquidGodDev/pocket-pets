@@ -52,3 +52,13 @@ for key in pairs(PLANTS) do
         plant = 10
     }
 end
+
+GARDEN_DATA = {}
+
+for row=1,5 do
+    GARDEN_DATA[row] = {}
+    for col=1,8 do
+        GARDEN_DATA[row][col] = nil
+    end
+end
+

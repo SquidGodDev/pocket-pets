@@ -12,16 +12,14 @@ function SeedList:init()
     self.listHeight = 240
 
     self.listviewObject = getmetatable(self.listview)
-    self.listviewObject.rowToPlant = {}
+    self.rowToPlant = {}
     local rowCount = 1
     for key in pairs(PLANT_INVENTORY) do
-        self.listviewObject.rowToPlant[rowCount] = key
+        self.rowToPlant[rowCount] = key
         rowCount += 1
     end
-
-    printTable(self.listviewObject.rowToPlant)
-
-    self.listview:setNumberOfRows(#self.listviewObject.rowToPlant)
+    self.listview:setNumberOfRows(#self.rowToPlant)
+    self.listviewObject.rowToPlant = self.rowToPlant
 
     self.animationTime = 300
 
@@ -50,6 +48,7 @@ function SeedList:init()
     self.listX = 304
     self:setCenter(0, 0)
     self:moveTo(self.listX, 0)
+    self:setZIndex(100)
     self:add()
 end
 
@@ -85,6 +84,11 @@ function SeedList:update()
         gfx.popContext()
         self:setImage(listviewImage)
     end
+end
+
+function SeedList:getSelectedPlant()
+    local _, row = self.listview:getSelection()
+    return self.rowToPlant[row]
 end
 
 function SeedList:animateOffScreen()

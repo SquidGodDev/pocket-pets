@@ -86,6 +86,6 @@ function GardenScene:init()
     local maxRow = gardenLevels[gardenLevel].maxRow
     local minCol = gardenLevels[gardenLevel].minCol
     local maxCol = gardenLevels[gardenLevel].maxCol
-    GardenGrid(minRow, maxRow, minCol, maxCol)
-    SeedList()
+    local seedList = SeedList()
+    GardenGrid(minRow, maxRow, minCol, maxCol, seedList)
 end
