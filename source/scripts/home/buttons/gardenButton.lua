@@ -1,4 +1,5 @@
 import "scripts/home/buttons/button"
+import "scripts/garden/gardenScene"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -11,5 +12,5 @@ function GardenButton:init(x, y)
 end
 
 function GardenButton:pressButton()
-     
+    SceneManager:switchScene(GardenScene)
 end

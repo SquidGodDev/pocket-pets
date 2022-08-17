@@ -10,6 +10,9 @@ import "CoreLibs/animator"
 import "scripts/home/homeScene"
 import "scripts/garden/gardenScene"
 
+import "scripts/sceneManager"
+import "scripts/libraries/Signal"
+
 import "scripts/datastore"
 
 local pd <const> = playdate
@@ -19,11 +22,15 @@ math.randomseed(pd.getSecondsSinceEpoch())
 
 CUR_TIME = pd.getTime()
 
--- HomeScene()
-GardenScene()
+SceneManager = SceneManager()
+Signals = Signal()
+
+HomeScene()
+-- GardenScene()
 
 function pd.update()
     CUR_TIME = pd.getTime()
     gfx.sprite.update()
     pd.timer.updateTimers()
+    SceneManager:update()
 end

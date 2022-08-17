@@ -10,11 +10,7 @@ local gfx <const> = pd.graphics
 class('HomeButtons').extends(gfx.sprite)
 
 function HomeButtons:init()
-    self:initButtons()
-end
-
-function HomeButtons:initButtons()
-    self.buttonBaseX, self.buttonBaseY = 71, 206
+    self.buttonBaseX, self.buttonBaseY = 71, 208
     self.buttonXGap = 64
     self.homeButtons = {}
     self.selectedHomeButton = 1
@@ -46,11 +42,6 @@ function HomeButtons:update()
     elseif crankTick == -1 then
         self:moveCursorLeft()
     end
-
-    if pd.buttonJustPressed(pd.kButtonA) then
-        local selectedButton = self.homeButtons[self.selectedHomeButton]
-        selectedButton:pressButton()
-    end
 end
 
 function HomeButtons:moveCursorLeft()
@@ -73,10 +64,6 @@ function HomeButtons:moveCursorRight()
         selectedButton:select(true)
         self:updateSelectCursor()
     end
-end
-
-function HomeButtons:updateButton()
-    
 end
 
 function HomeButtons:updateSelectCursor()

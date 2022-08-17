@@ -44,6 +44,8 @@ PLANTS = {
     }
 }
 
+PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot', 'mushroom', 'pumpkin', 'pineapple', 'apple', 'pear', 'corn', 'strawberry', 'grape'}
+
 PLANT_INVENTORY = {}
 
 for key in pairs(PLANTS) do

@@ -15,7 +15,7 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     self.gridWidth = 358
     self.gridHeight = 220
     self.edgePadding = 10
-    self.gridview:setCellPadding(self.edgePadding / 2, 5, self.edgePadding / 2, 5)
+    self.gridview:setCellPadding(5, 5, 3, 3)
 
     self.gridviewObject = getmetatable(self.gridview)
     self.gridviewObject.plotImage = gfx.image.new("images/garden/gardenPlot")
@@ -57,15 +57,21 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     end
 
     self:setCenter(0, 0)
-    self:moveTo(21 - self.edgePadding / 2, 10 - self.edgePadding / 2)
+    self:moveTo((400 - self.gridWidth) / 2 - 4, (240 - self.gridHeight + self.edgePadding) / 2 + 10)
     self:add()
+
+    self.updateCounter = 0
+    self.updateRate = 30
 end
 
 function GardenGrid:update()
     local _, row, column = self.gridview:getSelection()
     local forceRedrawGrid = false
 
-    forceRedrawGrid = self:updatePlants()
+    self.updateCounter += 1
+    if self.updateCounter % self.updateRate == 0 then
+        forceRedrawGrid = self:updatePlants()
+    end
 
     if pd.buttonJustPressed(pd.kButtonA) then
         local plotData = GARDEN_DATA[row][column]
@@ -83,7 +89,7 @@ function GardenGrid:update()
             end
         else
             if plotData.grown then
-                PLANT_INVENTORY[selectedPlant].plant += 1
+                PLANT_INVENTORY[plotData.plant].plant += 1
                 GARDEN_DATA[row][column] = nil
                 forceRedrawGrid = true
             end
@@ -109,6 +115,7 @@ function GardenGrid:update()
     end
 
     if self.gridview.needsDisplay or forceRedrawGrid then
+        Signals:notify("updateGardenDisplay")
         local gridviewImage = gfx.image.new(self.gridWidth + self.edgePadding * 2, self.gridHeight + self.edgePadding * 2)
         gfx.pushContext(gridviewImage)
             self.gridview:drawInRect(0, 0, self.gridWidth + self.edgePadding * 2, self.gridHeight + self.edgePadding * 2)
@@ -118,8 +125,8 @@ function GardenGrid:update()
 end
 
 function GardenGrid:getRandomGrowthTime()
-    local minTime = 30
-    local maxTime = 60
+    local minTime = 5
+    local maxTime = 20
     local elapsedSeconds = pd.getElapsedTime()
     return elapsedSeconds + math.random(minTime, maxTime)
 end
@@ -139,4 +146,9 @@ function GardenGrid:updatePlants()
         end
     end
     return hasUpdated
+end
+
+function GardenGrid:getSelectedPlot()
+    local _, row, column = self.gridview:getSelection()
+    return GARDEN_DATA[row][column]
 end

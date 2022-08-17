@@ -14,8 +14,8 @@ function SeedList:init()
     self.listviewObject = getmetatable(self.listview)
     self.rowToPlant = {}
     local rowCount = 1
-    for key in pairs(PLANT_INVENTORY) do
-        self.rowToPlant[rowCount] = key
+    for _,v in ipairs(PLANTS_IN_ORDER) do
+        self.rowToPlant[rowCount] = v
         rowCount += 1
     end
     self.listview:setNumberOfRows(#self.rowToPlant)
@@ -43,11 +43,11 @@ function SeedList:init()
         gfx.drawText(plantSeedCount, x + 37, y + yOffset)
     end
 
-    self.listOut = true
+    self.listOut = false
 
     self.listX = 304
     self:setCenter(0, 0)
-    self:moveTo(self.listX, 0)
+    self:moveTo(400, 0)
     self:setZIndex(100)
     self:add()
 end
@@ -70,10 +70,26 @@ function SeedList:update()
     end
 
     if self.listOut then
+        local selectedRow = self.listview:getSelectedRow()
+        local totalRows = self.listview:getNumberOfRowsInSection(1)
         if crankTicks == -1 then
-            self.listview:selectPreviousRow(true)
+            -- self.listview:selectPreviousRow(true)
+            selectedRow -= 1
+            if selectedRow < 1 then
+                selectedRow = totalRows
+            end
+            self.listview:setSelectedRow(selectedRow)
+            self.listview:scrollToRow(selectedRow, true)
+            Signals:notify("updateGardenDisplay")
         elseif crankTicks == 1 then
-            self.listview:selectNextRow(true)
+            -- self.listview:selectNextRow(true)
+            selectedRow += 1
+            if selectedRow > totalRows then
+                selectedRow = 1
+            end
+            self.listview:setSelectedRow(selectedRow)
+            self.listview:scrollToRow(selectedRow, true)
+            Signals:notify("updateGardenDisplay")
         end
     end
 

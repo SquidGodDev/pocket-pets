@@ -1,5 +1,7 @@
 import "scripts/garden/gardenGrid"
 import "scripts/garden/seedList"
+import "scripts/garden/GardenDataDisplay"
+import "scripts/home/homeScene"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -87,5 +89,12 @@ function GardenScene:init()
     local minCol = gardenLevels[gardenLevel].minCol
     local maxCol = gardenLevels[gardenLevel].maxCol
     local seedList = SeedList()
-    GardenGrid(minRow, maxRow, minCol, maxCol, seedList)
+    local gardenGrid = GardenGrid(minRow, maxRow, minCol, maxCol, seedList)
+    GardenDataDisplay(seedList, gardenGrid)
+end
+
+function GardenScene:update()
+    if pd.buttonJustPressed(pd.kButtonB) then
+        SceneManager:switchScene(HomeScene)
+    end
 end
