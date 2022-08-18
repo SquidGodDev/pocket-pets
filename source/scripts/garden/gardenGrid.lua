@@ -61,7 +61,8 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     self:add()
 
     self.updateCounter = 0
-    self.updateRate = 30
+    self.updateRate = 100
+    self:updatePlants()
 end
 
 function GardenGrid:update()
