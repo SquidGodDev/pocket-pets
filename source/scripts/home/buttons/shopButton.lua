@@ -1,4 +1,5 @@
 import "scripts/home/buttons/button"
+import "scripts/shop/shopScene"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -11,5 +12,5 @@ function ShopButton:init(x, y)
 end
 
 function ShopButton:pressButton()
-    
+    SceneManager:switchScene(ShopScene)
 end

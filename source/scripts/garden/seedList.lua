@@ -72,23 +72,23 @@ function SeedList:update()
     if self.listOut then
         local selectedRow = self.listview:getSelectedRow()
         local totalRows = self.listview:getNumberOfRowsInSection(1)
-        if crankTicks == -1 then
-            -- self.listview:selectPreviousRow(true)
-            selectedRow -= 1
-            if selectedRow < 1 then
-                selectedRow = totalRows
-            end
-            self.listview:setSelectedRow(selectedRow)
-            self.listview:scrollToRow(selectedRow, true)
-            Signals:notify("updateGardenDisplay")
-        elseif crankTicks == 1 then
-            -- self.listview:selectNextRow(true)
-            selectedRow += 1
-            if selectedRow > totalRows then
-                selectedRow = 1
-            end
-            self.listview:setSelectedRow(selectedRow)
-            self.listview:scrollToRow(selectedRow, true)
+        if crankTicks == -1 or pd.buttonJustPressed(pd.kButtonUp) then
+            self.listview:selectPreviousRow(true)
+            -- selectedRow -= 1
+            -- if selectedRow < 1 then
+            --     selectedRow = totalRows
+            -- end
+            -- self.listview:setSelectedRow(selectedRow)
+            -- self.listview:scrollToRow(selectedRow, true)
+            -- Signals:notify("updateGardenDisplay")
+        elseif crankTicks == 1 or pd.buttonJustPressed(pd.kButtonDown) then
+            self.listview:selectNextRow(true)
+            -- selectedRow += 1
+            -- if selectedRow > totalRows then
+            --     selectedRow = 1
+            -- end
+            -- self.listview:setSelectedRow(selectedRow)
+            -- self.listview:scrollToRow(selectedRow, true)
             Signals:notify("updateGardenDisplay")
         end
     end
@@ -119,5 +119,5 @@ end
 
 function SeedList:navigationButtonPressed()
     local btnPress = pd.buttonJustPressed
-    return btnPress(pd.kButtonDown) or btnPress(pd.kButtonUp) or btnPress(pd.kButtonLeft) or btnPress(pd.kButtonRight) or btnPress(pd.kButtonA)
+    return btnPress(pd.kButtonLeft) or btnPress(pd.kButtonRight) or btnPress(pd.kButtonA) or btnPress(pd.kButtonB)
 end

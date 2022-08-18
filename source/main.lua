@@ -6,9 +6,12 @@ import "CoreLibs/timer"
 import "CoreLibs/crank"
 import "CoreLibs/ui"
 import "CoreLibs/animator"
+import "CoreLibs/animation"
 
 import "scripts/home/homeScene"
 import "scripts/garden/gardenScene"
+import "scripts/shop/shopScene"
+import "scripts/wish/wishScene"
 
 import "scripts/sceneManager"
 import "scripts/libraries/Signal"
@@ -27,6 +30,8 @@ Signals = Signal()
 
 HomeScene()
 -- GardenScene()
+-- ShopScene()
+-- WishScene()
 
 function pd.update()
     CUR_TIME = pd.getTime()

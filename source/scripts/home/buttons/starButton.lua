@@ -1,4 +1,5 @@
 import "scripts/home/buttons/button"
+import "scripts/wish/wishScene"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -11,5 +12,5 @@ function StarButton:init(x, y)
 end
 
 function StarButton:pressButton()
-    
+    SceneManager:switchScene(WishScene)
 end

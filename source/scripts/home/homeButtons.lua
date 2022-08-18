@@ -21,6 +21,7 @@ function HomeButtons:init()
     table.insert(self.homeButtons, StarButton(self.buttonBaseX + self.buttonXGap * 4, self.buttonBaseY))
     self.homeButtons[1]:select(true)
 
+    self.spriteFlushed = false
     self.selectImage = gfx.image.new("images/mainScreen/buttons/selectBorder")
     self.selectSprite = gfx.sprite.new(self.selectImage)
     self.selectSprite:moveTo(self.buttonBaseX, self.buttonBaseY)
@@ -34,6 +35,13 @@ function HomeButtons:update()
         self:moveCursorLeft()
     elseif pd.buttonJustPressed(pd.kButtonRight) then
         self:moveCursorRight()
+        if not self.spriteFlushed then
+            self.spriteFlushed = true
+            gfx.pushContext()
+                gfx.setLineWidth(5)
+                gfx.drawRect(43, 179, 56, 55)
+            gfx.popContext()
+        end
     end
 
     local crankTick = pd.getCrankTicks(3)

@@ -96,11 +96,11 @@ function GardenGrid:update()
         end
     end
 
-    if pd.buttonJustPressed(pd.kButtonUp) then
+    if pd.buttonJustPressed(pd.kButtonUp) and not self.seedList.listOut then
         if row > self.minRow then
             self.gridview:selectPreviousRow(true)
         end
-    elseif pd.buttonJustPressed(pd.kButtonDown) then
+    elseif pd.buttonJustPressed(pd.kButtonDown) and not self.seedList.listOut then
         if row < self.maxRow then
             self.gridview:selectNextRow(true)
         end

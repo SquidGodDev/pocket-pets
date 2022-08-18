@@ -88,13 +88,13 @@ function GardenScene:init()
     local maxRow = gardenLevels[gardenLevel].maxRow
     local minCol = gardenLevels[gardenLevel].minCol
     local maxCol = gardenLevels[gardenLevel].maxCol
-    local seedList = SeedList()
-    local gardenGrid = GardenGrid(minRow, maxRow, minCol, maxCol, seedList)
-    GardenDataDisplay(seedList, gardenGrid)
+    self.seedList = SeedList()
+    local gardenGrid = GardenGrid(minRow, maxRow, minCol, maxCol, self.seedList)
+    GardenDataDisplay(self.seedList, gardenGrid)
 end
 
 function GardenScene:update()
-    if pd.buttonJustPressed(pd.kButtonB) then
+    if pd.buttonJustPressed(pd.kButtonB) and not self.seedList.listOut then
         SceneManager:switchScene(HomeScene)
     end
 end
