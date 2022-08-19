@@ -1,10 +1,12 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
-class('SeedList').extends(gfx.sprite)
+class('FoodList').extends(gfx.sprite)
 
-function SeedList:init()
-
+function FoodList:init()
+    Signals:subscribe("openFoodList", self, function()
+        self:openList()
+    end)
     self.listview = pd.ui.gridview.new(78, 26)
     self.listview:setContentInset(0, 0, 0, 0)
     self.listview:setCellPadding(9, 9, 5, 5)
@@ -39,8 +41,8 @@ function SeedList:init()
         gfx.setImageDrawMode(gfx.kDrawModeInverted)
         plantImage:draw(x + 4, y + yOffset)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
-        local plantSeedCount = PLANT_INVENTORY[plantName].seeds
-        gfx.drawText(plantSeedCount, x + 37, y + yOffset)
+        local plantSeedCount = PLANT_INVENTORY[plantName].plant
+        gfx.drawText(plantSeedCount, x + 45, y + yOffset)
     end
 
     self.listOut = false
@@ -48,52 +50,46 @@ function SeedList:init()
     self.listX = 304
     self:setCenter(0, 0)
     self:moveTo(400, 0)
-    self:setZIndex(100)
-    self:add()
+    self:setZIndex(500)
 end
 
-function SeedList:update()
+function FoodList:update()
     if self.listAnimator then
         self:moveTo(self.listAnimator:currentValue(), self.y)
         if self.listAnimator:ended() then
             self.listAnimator = nil
+            if not self.listOut then
+                self:remove()
+            end
         end
     end
 
-    local crankTicks = pd.getCrankTicks(4)
     if self:navigationButtonPressed() and self.listOut then
         self:animateOffScreen()
         self.listOut = false
-    elseif crankTicks ~= 0 and not self.listOut then
-        self:animateOnScreen()
-        self.listOut = true
     end
 
-    if self.listOut then
-        local selectedRow = self.listview:getSelectedRow()
-        local totalRows = self.listview:getNumberOfRowsInSection(1)
-        if crankTicks == -1 or pd.buttonJustPressed(pd.kButtonUp) then
-            self.listview:selectPreviousRow(true)
-            -- selectedRow -= 1
-            -- if selectedRow < 1 then
-            --     selectedRow = totalRows
-            -- end
-            -- self.listview:setSelectedRow(selectedRow)
-            -- self.listview:scrollToRow(selectedRow, true)
-            Signals:notify("updateGardenDisplay")
-        elseif crankTicks == 1 or pd.buttonJustPressed(pd.kButtonDown) then
-            self.listview:selectNextRow(true)
-            -- selectedRow += 1
-            -- if selectedRow > totalRows then
-            --     selectedRow = 1
-            -- end
-            -- self.listview:setSelectedRow(selectedRow)
-            -- self.listview:scrollToRow(selectedRow, true)
-            Signals:notify("updateGardenDisplay")
+    local forceUpdate = false
+    if pd.buttonJustPressed(pd.kButtonA) then
+        local selectedPlant = self:getSelectedPlant()
+        local plantCount = PLANT_INVENTORY[selectedPlant].plant
+        if plantCount > 0 then
+            Signals:notify("feed", 10)
+            PLANT_INVENTORY[selectedPlant].plant -= 1
+            forceUpdate = true
         end
     end
 
-    if self.listview.needsDisplay then
+    if self.listOut then
+        local crankTicks = pd.getCrankTicks(4)
+        if crankTicks == -1 or pd.buttonJustPressed(pd.kButtonUp) then
+            self.listview:selectPreviousRow(true)
+        elseif crankTicks == 1 or pd.buttonJustPressed(pd.kButtonDown) then
+            self.listview:selectNextRow(true)
+        end
+    end
+
+    if self.listview.needsDisplay or forceUpdate then
         local listviewImage = gfx.image.new(self.listWidth, self.listHeight, gfx.kColorBlack)
         gfx.pushContext(listviewImage)
             self.listview:drawInRect(0, 0, self.listWidth, self.listHeight)
@@ -102,22 +98,30 @@ function SeedList:update()
     end
 end
 
-function SeedList:getSelectedPlant()
+function FoodList:openList()
+    if not self.listOut then
+        self:add()
+        self:animateOnScreen()
+        self.listOut = true
+    end
+end
+
+function FoodList:getSelectedPlant()
     local _, row = self.listview:getSelection()
     return self.rowToPlant[row]
 end
 
-function SeedList:animateOffScreen()
+function FoodList:animateOffScreen()
     local animateOffset = (1 - (400 - self.x) / (400 - self.listX)) * - self.animationTime
     self.listAnimator = gfx.animator.new(self.animationTime, self.x, self.listX + self.listWidth, pd.easingFunctions.inOutCubic, animateOffset)
 end
 
-function SeedList:animateOnScreen()
+function FoodList:animateOnScreen()
     local animateOffset = (400 - self.x) / (400 - self.listX) * - self.animationTime
     self.listAnimator = gfx.animator.new(self.animationTime, self.x, self.listX, pd.easingFunctions.inOutCubic, animateOffset)
 end
 
-function SeedList:navigationButtonPressed()
+function FoodList:navigationButtonPressed()
     local btnPress = pd.buttonJustPressed
-    return btnPress(pd.kButtonLeft) or btnPress(pd.kButtonRight) or btnPress(pd.kButtonA) or btnPress(pd.kButtonB)
+    return btnPress(pd.kButtonLeft) or btnPress(pd.kButtonRight) or btnPress(pd.kButtonB)
 end

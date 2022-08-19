@@ -26,6 +26,7 @@ function SceneManager:loadNewScene()
     gfx.sprite.removeAll()
     self:removeAllTimers()
     gfx.setDrawOffset(0, 0)
+    Signals:clear()
     self:createTransitionSprite(true)
     self.transitionAnimator = gfx.animator.new(self.transitionTime, self.transitionWidth, 0, pd.easingFunctions.inOutCubic)
     self.transitioningIn = false

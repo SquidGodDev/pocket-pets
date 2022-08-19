@@ -4,7 +4,9 @@ local gfx <const> = pd.graphics
 
 class('Button').extends(gfx.sprite)
 
-function Button:init(x, y, buttonImageTable)
+function Button:init(x, y, foodList, petList, buttonImageTable)
+    self.foodList = foodList
+    self.petList = petList
     self.buttonImageTable = buttonImageTable
     self:setImage(self.buttonImageTable:getImage(1))
     self.selected = false
@@ -13,7 +15,13 @@ function Button:init(x, y, buttonImageTable)
 end
 
 function Button:update()
-    if self.selected then
+    local listOut = false
+    if self.foodList and self.foodList.listOut then
+        listOut = true
+    elseif self.petList and self.petList.listOut then
+        listOut = true
+    end
+    if self.selected and not listOut then
         if pd.buttonJustPressed(pd.kButtonA) then
             self:pressButton()
         end

@@ -12,16 +12,16 @@ SELECTED_HOME_BUTTON = 3
 
 class('HomeButtons').extends(gfx.sprite)
 
-function HomeButtons:init()
+function HomeButtons:init(foodList, petList)
     self.buttonBaseX, self.buttonBaseY = 42, 208
     self.buttonXGap = 64
     self.homeButtons = {}
-    table.insert(self.homeButtons, FeedButton(self.buttonBaseX, self.buttonBaseY))
-    table.insert(self.homeButtons, GardenButton(self.buttonBaseX + self.buttonXGap, self.buttonBaseY))
-    table.insert(self.homeButtons, ShopButton(self.buttonBaseX + self.buttonXGap * 2, self.buttonBaseY))
-    table.insert(self.homeButtons, BattleButton(self.buttonBaseX + self.buttonXGap * 3, self.buttonBaseY))
-    table.insert(self.homeButtons, StarButton(self.buttonBaseX + self.buttonXGap * 4, self.buttonBaseY))
-    table.insert(self.homeButtons, PetButton(self.buttonBaseX + self.buttonXGap * 5, self.buttonBaseY))
+    table.insert(self.homeButtons, FeedButton(self.buttonBaseX, self.buttonBaseY, foodList, petList))
+    table.insert(self.homeButtons, GardenButton(self.buttonBaseX + self.buttonXGap, self.buttonBaseY, foodList, petList))
+    table.insert(self.homeButtons, ShopButton(self.buttonBaseX + self.buttonXGap * 2, self.buttonBaseY, foodList, petList))
+    table.insert(self.homeButtons, BattleButton(self.buttonBaseX + self.buttonXGap * 3, self.buttonBaseY, foodList, petList))
+    table.insert(self.homeButtons, StarButton(self.buttonBaseX + self.buttonXGap * 4, self.buttonBaseY, foodList, petList))
+    table.insert(self.homeButtons, PetButton(self.buttonBaseX + self.buttonXGap * 5, self.buttonBaseY, foodList, petList))
     self.homeButtons[SELECTED_HOME_BUTTON]:select(true)
 
     self.spriteFlushed = false
@@ -40,12 +40,12 @@ function HomeButtons:update()
         self:moveCursorRight()
     end
 
-    local crankTick = pd.getCrankTicks(3)
-    if crankTick == 1 then
-        self:moveCursorRight()
-    elseif crankTick == -1 then
-        self:moveCursorLeft()
-    end
+    -- local crankTick = pd.getCrankTicks(3)
+    -- if crankTick == 1 then
+    --     self:moveCursorRight()
+    -- elseif crankTick == -1 then
+    --     self:moveCursorLeft()
+    -- end
 end
 
 function HomeButtons:moveCursorLeft()
