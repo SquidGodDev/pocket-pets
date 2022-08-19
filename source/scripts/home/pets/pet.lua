@@ -5,8 +5,11 @@ local gfx <const> = pd.graphics
 
 class('Pet').extends(AnimatedSprite)
 
-function Pet:init(x, y, petImagetable)
+function Pet:init(x, y, type, foodList)
+    local petImagetable = gfx.imagetable.new("images/pets/" .. type .. "-table-32-32")
     Pet.super.init(self, petImagetable)
+    self.foodList = foodList
+
     self:addState("idle", 1, 2, {tickStep = 8})
     self:addState("walk", 3, 4, {tickStep = 8})
 
@@ -32,11 +35,62 @@ function Pet:init(x, y, petImagetable)
 
     self:playAnimation()
     self:moveTo(x, y)
+
+    self.sadEmoji = gfx.image.new("images/mainScreen/emojis/sadEmoji")
+    self.sadEmojiSprite = gfx.sprite.new(self.sadEmoji)
+    self.sadEmojiSprite:setVisible(false)
+    self.sadEmojiSprite:add()
+
+    self.emojiTime = 2000
+    self.emojiTimer = nil
+    self.heartEmoji = gfx.image.new("images/mainScreen/emojis/heartEmoji")
+    self.happyEmojiSprite = gfx.sprite.new(self.heartEmoji)
+    self.happyEmojiSprite:setVisible(false)
+    self.happyEmojiSprite:add()
+
+    self.pettingImageTable = gfx.imagetable.new("images/mainScreen/emojis/hand-table-32-32")
+    self.pettingAnimation = gfx.animation.loop.new(100, self.pettingImageTable, true)
+    self.pettingSprite = gfx.sprite.new()
+    self.pettingSprite:setVisible(false)
+    self.pettingSprite:add()
+    self.petting = false
+
+    Signals:subscribe("happy", self, function()
+        self:happy()
+    end)
+
+    Signals:subscribe("sad", self, function(_, _, flag)
+        self:sad(flag)
+    end)
 end
 
 function Pet:update()
     self:moveBy(self.velocity, 0)
     self:updateAnimation()
+    self.happyEmojiSprite:moveTo(self.x, self.y - 24)
+    self.sadEmojiSprite:moveTo(self.x, self.y - 24)
+
+    if self.emojiTimer then
+        self.happyEmojiSprite:setVisible(true)
+    else
+        self.happyEmojiSprite:setVisible(false)
+    end
+
+    local _, accelCrankChange = pd.getCrankChange()
+    if math.abs(accelCrankChange) > 4 then
+        self.petting = true
+    else
+        self.petting = false
+    end
+
+    if self.petting and not self.foodList.listOut then
+        self.pettingSprite:setVisible(true)
+        self.pettingSprite:moveTo(self.x + 10, self.y - 10)
+        self.pettingSprite:setImage(self.pettingAnimation:image())
+        self.happyEmojiSprite:setVisible(true)
+    else
+        self.pettingSprite:setVisible(false)
+    end
 
     if self.currentState == "walk" then
         if self.x <= self.minX + self.edgeBuffer or self.x >= self.maxX - self.edgeBuffer then
@@ -44,6 +98,19 @@ function Pet:update()
             self:setWaitTimer()
         end
     end
+end
+
+function Pet:happy()
+    if self.emojiTimer then
+        self.emojiTimer:remove()
+    end
+    self.emojiTimer = pd.timer.new(self.emojiTime, function()
+        self.emojiTimer = nil
+    end)
+end
+
+function Pet:sad(flag)
+    self.sadEmojiSprite:setVisible(flag)
 end
 
 function Pet:setWaitTimer()

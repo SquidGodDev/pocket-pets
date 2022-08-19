@@ -17,7 +17,7 @@ PETS = {
     Hachi = {
         type = "dog",
         hunger = {
-            level = 50,
+            level = 10,
             lastTime = playdate.getTime()
         },
         lastPet = playdate.getTime(),
@@ -33,8 +33,8 @@ PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot'
 PLANT_INVENTORY = {}
 for _, plant in ipairs(PLANTS_IN_ORDER) do
     PLANT_INVENTORY[plant] = {
-        seeds = 0,
-        plant = 0
+        seeds = 10,
+        plant = 10
     }
 end
 

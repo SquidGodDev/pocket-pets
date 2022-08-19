@@ -16,8 +16,8 @@ function FoodList:init()
     self.listviewObject = getmetatable(self.listview)
     self.rowToPlant = {}
     local rowCount = 1
-    for _,v in ipairs(PLANTS_IN_ORDER) do
-        self.rowToPlant[rowCount] = v
+    for _,plant in ipairs(PLANTS_IN_ORDER) do
+        self.rowToPlant[rowCount] = plant
         rowCount += 1
     end
     self.listview:setNumberOfRows(#self.rowToPlant)
@@ -75,6 +75,7 @@ function FoodList:update()
         local plantCount = PLANT_INVENTORY[selectedPlant].plant
         if plantCount > 0 then
             Signals:notify("feed", 10)
+            Signals:notify("happy")
             PLANT_INVENTORY[selectedPlant].plant -= 1
             forceUpdate = true
         end

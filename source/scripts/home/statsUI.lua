@@ -21,6 +21,7 @@ function StatsUI:init(x, y)
     self.updateCounter = 0
 
     self:initializeStats()
+    self:updateHunger(0)
 
     Signals:subscribe("feed", self, function(_, _, amount)
         self:feed(amount)
@@ -79,8 +80,8 @@ function StatsUI:updateStatsDisplay()
         gfx.drawText("*Name: *" .. SELECTED_PET, 6, 3)
         local meterWidth = 96
         local meterHeight = 13
-        gfx.fillRect(25, 24, (self.happiness / 100) * meterWidth, meterHeight)
-        gfx.fillRect(25, 47, (self.hunger / 100) * meterWidth, meterHeight)
+        gfx.fillRect(25, 25, (self.happiness / 100) * meterWidth, meterHeight)
+        gfx.fillRect(25, 48, (self.hunger / 100) * meterWidth, meterHeight)
     gfx.popContext()
     self:setImage(statDisplayImage)
 end
@@ -94,6 +95,12 @@ function StatsUI:updateHunger(change)
     end
     PETS[SELECTED_PET].hunger.lastTime = pd.getTime()
     PETS[SELECTED_PET].hunger.level = self.hunger
+
+    if self.hunger <= 20 then
+        Signals:notify("sad", true)
+    else
+        Signals:notify("sad", false)
+    end
 
     self:calculatePetHappiness()
     self:updateStatsDisplay()

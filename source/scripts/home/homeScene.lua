@@ -2,7 +2,7 @@ import "scripts/home/statsUI"
 import "scripts/home/homeButtons"
 import "scripts/home/food/foodList"
 import "scripts/home/sky/sky"
-import "scripts/home/pets/dog"
+import "scripts/home/pets/pet"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -18,5 +18,5 @@ function HomeScene:init()
     StatsUI(5, 5)
     local foodList = FoodList()
     HomeButtons(foodList)
-    Dog(120, 159)
+    Pet(120, 159, "dog", foodList)
 end
