@@ -23,6 +23,7 @@
 		"type": "shell",
 		"command": "pdc",
 		"args": [
+		  "-k",
 		  "-sdkpath",
 		  "${env:PLAYDATE_SDK_PATH}",
 		  "'${workspaceFolder}\\source'", // source folder

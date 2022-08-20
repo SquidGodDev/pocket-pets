@@ -18,5 +18,6 @@ function HomeScene:init()
     StatsUI(5, 5)
     local foodList = FoodList()
     HomeButtons(foodList)
-    Pet(120, 159, "dog", foodList)
+    local selectedPetType = PETS[SELECTED_PET].type
+    Pet(120, 159, selectedPetType, foodList)
 end

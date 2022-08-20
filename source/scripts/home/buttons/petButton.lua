@@ -1,4 +1,5 @@
 import "scripts/home/buttons/button"
+import "scripts/petList/petListScene"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -11,5 +12,5 @@ function PetButton:init(x, y, foodList, petList)
 end
 
 function PetButton:pressButton()
-    
+    SceneManager:switchScene(PetListScene)
 end
