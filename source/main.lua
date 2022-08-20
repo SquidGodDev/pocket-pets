@@ -30,8 +30,11 @@ CUR_TIME = pd.getTime()
 SceneManager = SceneManager()
 Signals = Signal()
 
--- HomeScene()
-PetHatchScene()
+if SELECTED_PET == "" then
+    PetHatchScene()
+else
+    HomeScene()
+end
 
 function pd.update()
     CUR_TIME = pd.getTime()

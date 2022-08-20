@@ -12,42 +12,46 @@ WISH_GRANT_TIME = {
 }
 
 -- === PETS ===
-SELECTED_PET = "ssssssss"
-PETS = {
-    Hachi = {
-        type = "dog",
-        hunger = {
-            level = 10,
-            lastTime = playdate.getTime()
-        },
-        lastPet = playdate.getTime(),
-        lastGamePlay = playdate.getTime(),
-        level = 1,
-        xp = 0
-    },
-    ssssssss = {
-        type = "snake",
-        hunger = {
-            level = 50,
-            lastTime = playdate.getTime()
-        },
-        lastPet = playdate.getTime(),
-        lastGamePlay = playdate.getTime(),
-        level = 1,
-        xp = 0
-    },
-    Yuki = {
-        type = "duck",
-        hunger = {
-            level = 50,
-            lastTime = playdate.getTime()
-        },
-        lastPet = playdate.getTime(),
-        lastGamePlay = playdate.getTime(),
-        level = 1,
-        xp = 0
-    }
-}
+PET_TYPES = {'bat', 'buffBunny', 'cat', 'chicken', 'crab', 'dog', 'duck', 'hedgehog', 'snake', 'whale', 'wingedUnicorn'}
+
+SELECTED_PET = ""
+
+PETS = {}
+-- PETS = {
+--     Hachi = {
+--         type = "dog",
+--         hunger = {
+--             level = 10,
+--             lastTime = playdate.getTime()
+--         },
+--         lastPet = playdate.getTime(),
+--         lastGamePlay = playdate.getTime(),
+--         level = 1,
+--         xp = 0
+--     },
+--     ssssssss = {
+--         type = "snake",
+--         hunger = {
+--             level = 50,
+--             lastTime = playdate.getTime()
+--         },
+--         lastPet = playdate.getTime(),
+--         lastGamePlay = playdate.getTime(),
+--         level = 1,
+--         xp = 0
+--     },
+--     Yuki = {
+--         type = "duck",
+--         hunger = {
+--             level = 50,
+--             lastTime = playdate.getTime()
+--         },
+--         lastPet = playdate.getTime(),
+--         lastGamePlay = playdate.getTime(),
+--         level = 1,
+--         xp = 0
+--     }
+-- }
 
 -- === GARDEN ===
 PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot', 'mushroom', 'pumpkin', 'pineapple', 'apple', 'pear', 'corn', 'strawberry', 'grape'}
