@@ -1,4 +1,3 @@
-
 -- === SHOP ===
 GEMS = 10000
 DAILY_SHOP_ITEMS = nil
@@ -17,41 +16,6 @@ PET_TYPES = {'bat', 'buffBunny', 'cat', 'chicken', 'crab', 'dog', 'duck', 'hedge
 SELECTED_PET = ""
 
 PETS = {}
--- PETS = {
---     Hachi = {
---         type = "dog",
---         hunger = {
---             level = 10,
---             lastTime = playdate.getTime()
---         },
---         lastPet = playdate.getTime(),
---         lastGamePlay = playdate.getTime(),
---         level = 1,
---         xp = 0
---     },
---     ssssssss = {
---         type = "snake",
---         hunger = {
---             level = 50,
---             lastTime = playdate.getTime()
---         },
---         lastPet = playdate.getTime(),
---         lastGamePlay = playdate.getTime(),
---         level = 1,
---         xp = 0
---     },
---     Yuki = {
---         type = "duck",
---         hunger = {
---             level = 50,
---             lastTime = playdate.getTime()
---         },
---         lastPet = playdate.getTime(),
---         lastGamePlay = playdate.getTime(),
---         level = 1,
---         xp = 0
---     }
--- }
 
 -- === GARDEN ===
 PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot', 'mushroom', 'pumpkin', 'pineapple', 'apple', 'pear', 'corn', 'strawberry', 'grape'}
@@ -59,8 +23,8 @@ PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot'
 PLANT_INVENTORY = {}
 for _, plant in ipairs(PLANTS_IN_ORDER) do
     PLANT_INVENTORY[plant] = {
-        seeds = 10,
-        plant = 10
+        seeds = 0,
+        plant = 0
     }
 end
 
@@ -73,6 +37,49 @@ for row=1,5 do
 end
 
 GARDEN_LEVEL = 1
+
+-- === SAVING AND LOADING ===
+
+local function saveGameData()
+    local gameData = {
+        gems = GEMS,
+        dailyShopItems = DAILY_SHOP_ITEMS,
+        wishGranted = WISH_GRANTED,
+        wishGrantTime = WISH_GRANT_TIME,
+        selectedPet = SELECTED_PET,
+        pets = PETS,
+        plantInventory = PLANT_INVENTORY,
+        gardenData = GARDEN_DATA,
+        gardenLevel = GARDEN_LEVEL
+    }
+    playdate.datastore.write(gameData)
+end
+
+local function loadGameData()
+    local gameData = playdate.datastore.read()
+    if gameData then
+        GEMS = gameData.gems
+        DAILY_SHOP_ITEMS = gameData.dailyShopItems
+        WISH_GRANTED = gameData.wishGranted
+        WISH_GRANT_TIME = gameData.wishGrantTime
+        SELECTED_PET = gameData.selectedPet
+        PETS = gameData.pets
+        PLANT_INVENTORY = gameData.plantInventory
+        GARDEN_DATA = gameData.gardenData
+        GARDEN_LEVEL = gameData.gardenLevel
+    end
+end
+
+loadGameData()
+
+function playdate.gameWillTerminate()
+    saveGameData()
+end
+
+function playdate.gameWillSleep()
+    saveGameData()
+end
+
 
 GARDEN_LEVELS = {
     {
