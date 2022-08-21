@@ -1,6 +1,6 @@
 
 -- === SHOP ===
-GEMS = 100
+GEMS = 10000
 DAILY_SHOP_ITEMS = nil
 
 -- === WISH ===
@@ -71,3 +71,74 @@ for row=1,5 do
         GARDEN_DATA[row][col] = nil
     end
 end
+
+GARDEN_LEVEL = 1
+
+GARDEN_LEVELS = {
+    {
+        minRow = 3,
+        maxRow = 3,
+        minCol = 4,
+        maxCol = 5
+    },
+    {
+        minRow = 2,
+        maxRow = 3,
+        minCol = 4,
+        maxCol = 5
+    },
+    {
+        minRow = 2,
+        maxRow = 4,
+        minCol = 4,
+        maxCol = 5
+    },
+    {
+        minRow = 2,
+        maxRow = 4,
+        minCol = 3,
+        maxCol = 5
+    },
+    {
+        minRow = 2,
+        maxRow = 4,
+        minCol = 3,
+        maxCol = 6
+    },
+    {
+        minRow = 2,
+        maxRow = 4,
+        minCol = 2,
+        maxCol = 6
+    },
+    {
+        minRow = 2,
+        maxRow = 4,
+        minCol = 2,
+        maxCol = 7
+    },
+    {
+        minRow = 1,
+        maxRow = 4,
+        minCol = 2,
+        maxCol = 7
+    },
+    {
+        minRow = 1,
+        maxRow = 5,
+        minCol = 2,
+        maxCol = 7
+    },
+    {
+        minRow = 1,
+        maxRow = 5,
+        minCol = 1,
+        maxCol = 7
+    },
+    {
+        minRow = 1,
+        maxRow = 5,
+        minCol = 1,
+        maxCol = 8
+    }
+}
