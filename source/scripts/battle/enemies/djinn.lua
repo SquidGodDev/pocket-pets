@@ -16,5 +16,5 @@ end
 
 function Djinn:attack()
     Djinn.super.attack(self)
-    self:directDoubleAttack(self.dmg)
+    self:directDoubleAttack(self.attackDmg)
 end
