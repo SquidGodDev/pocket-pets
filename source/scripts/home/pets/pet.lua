@@ -79,6 +79,8 @@ function Pet:update()
     local _, accelCrankChange = pd.getCrankChange()
     if math.abs(accelCrankChange) > 4 then
         self.petting = true
+        PETS[SELECTED_PET].lastPet = pd.getTime()
+        Signals:notify("updateStatDisplay")
     else
         self.petting = false
     end

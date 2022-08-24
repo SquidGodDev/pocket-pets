@@ -26,6 +26,10 @@ function StatsUI:init(x, y)
     Signals:subscribe("feed", self, function(_, _, amount)
         self:feed(amount)
     end)
+
+    Signals:subscribe("updateStatDisplay", self, function()
+        self:updateStatsDisplay()
+    end)
 end
 
 function StatsUI:update()

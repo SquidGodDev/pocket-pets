@@ -10,10 +10,8 @@ import "CoreLibs/animation"
 import "CoreLibs/keyboard"
 
 import "scripts/home/homeScene"
-import "scripts/garden/gardenScene"
-import "scripts/shop/shopScene"
-import "scripts/wish/wishScene"
 import "scripts/petHatch/petHatchScene"
+import "scripts/battle/battleScene"
 
 import "scripts/sceneManager"
 import "scripts/libraries/Signal"
@@ -25,19 +23,18 @@ local gfx <const> = pd.graphics
 
 math.randomseed(pd.getSecondsSinceEpoch())
 
-CUR_TIME = pd.getTime()
-
 SceneManager = SceneManager()
 Signals = Signal()
 
-if SELECTED_PET == "" then
-    PetHatchScene()
-else
-    HomeScene()
-end
+-- if SELECTED_PET == "" then
+--     PetHatchScene()
+-- else
+--     HomeScene()
+-- end
+
+BattleScene()
 
 function pd.update()
-    CUR_TIME = pd.getTime()
     gfx.sprite.update()
     pd.timer.updateTimers()
     SceneManager:update()

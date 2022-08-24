@@ -78,6 +78,7 @@ function FoodList:update()
             Signals:notify("happy")
             PLANT_INVENTORY[selectedPlant].plant -= 1
             forceUpdate = true
+            self:addPlantToDeck(selectedPlant)
         end
     end
 
@@ -98,6 +99,16 @@ function FoodList:update()
         self:setImage(listviewImage)
     end
 end
+
+function FoodList:addPlantToDeck(plant)
+    local plantDeck = PETS[SELECTED_PET].plantDeck
+    table.insert(plantDeck, plant)
+    while #plantDeck > 10 do
+        table.remove(plantDeck, 1)
+    end
+    PETS[SELECTED_PET].plantDeck = plantDeck
+end
+
 
 function FoodList:openList()
     if not self.listOut then
