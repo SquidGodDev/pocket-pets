@@ -109,7 +109,7 @@ function BaseEnemy:singleAttack(dmg, x, y)
         local gridBaseX = self.battleScene.gridBaseX
         local gridBaseY = self.battleScene.gridBaseY
         local gridGap = self.battleScene.gridGap
-        PlayerAttackSprite(gridBaseX + (x - 1) * gridGap - 5, gridBaseY + (y - 1) * gridGap - 5)
+        PlayerAttackSprite(gridBaseX + (x - 1) * (gridGap), gridBaseY + (y - 1) * (gridGap))
     end)
 end
 

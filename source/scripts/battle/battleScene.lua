@@ -1,3 +1,5 @@
+import "scripts/home/homeScene"
+
 import "scripts/battle/playerAttackSprite"
 import "scripts/battle/warningIcon"
 import "scripts/battle/enemies/goblin"
@@ -28,7 +30,7 @@ function BattleScene:init()
     self.playerX = 2
     self.playerY = 2
     self.playerMaxHealth = 100
-    self.playerHealth = self.playerMaxHealth
+    self.playerHealth = 5 --self.playerMaxHealth
 
     local petType = PETS[SELECTED_PET].type
     local petImageTable = gfx.imagetable.new("images/pets/"..petType.."-table-32-32")
@@ -136,6 +138,11 @@ function BattleScene:init()
 
     self:levelDefeated()
     self.gameState = 'levelTransition'
+
+    self.resultsSprite = gfx.sprite.new()
+    self.resultsSprite:setZIndex(500)
+    self.resultsSprite:moveTo(200, -50)
+    self.resultsSprite:add()
 end
 
 function BattleScene:update()
@@ -157,6 +164,14 @@ function BattleScene:update()
         if self.enemyEntranceAnimator:ended() then
             self.enemyInstance:createMoveTimer()
             self.gameState = 'battle'
+        end
+    elseif self.gameState == 'results' then
+        self.playerSprite:moveTo(self.playerSprite.x, self.playerDeathAnimator:currentValue())
+        self.resultsSprite:moveTo(self.resultsSprite.x, self.resultsAnimator:currentValue())
+        if self.resultsAnimator:ended() then
+            if pd.buttonJustPressed(pd.kButtonA) then
+                SceneManager:switchScene(HomeScene)
+            end
         end
     end
 end
@@ -232,10 +247,6 @@ function BattleScene:movePlayer(x, y)
     end
 
     self.playerSprite:moveTo(self.gridBaseX + (self.playerX - 1) * self.gridGap, self.gridBaseY + (self.playerY - 1) * self.gridGap)
-end
-
-function BattleScene:moveEnemy()
-    
 end
 
 function BattleScene:drawPlayerHealth()
@@ -350,8 +361,8 @@ function BattleScene:damageEnemy(dmg, row)
 end
 
 function BattleScene:createWarning(x, y)
-    local warningX = self.gridBaseX + (x-1)*self.gridGap - 11
-    local warningY = self.gridBaseY + (y-1)*self.gridGap - 10
+    local warningX = self.gridBaseX + (x-1)*self.gridGap - 10
+    local warningY = self.gridBaseY + (y-1)*self.gridGap - 9
     WarningIcon(warningX, warningY)
 end
 
@@ -360,10 +371,52 @@ function BattleScene:damagePlayer(dmg, x, y)
         self.playerHealth -= dmg
         if self.playerHealth <= 0 then
             self.playerHealth = 0
-            -- die
+            self:playerDied()
         end
         self:drawPlayerHealth()
     end
+end
+
+function BattleScene:playerDied()
+    self.gameState = 'results'
+    local resultsImageWidth, resultsImageHeight = 160, 110
+    local resultsImage = gfx.image.new(resultsImageWidth, resultsImageHeight)
+    if self.enemyInstance then
+        self.enemyInstance.moveTimer:remove()
+    end
+    gfx.pushContext(resultsImage)
+        gfx.fillRoundRect(0, 0, resultsImageWidth, resultsImageHeight, 3)
+        gfx.setColor(gfx.kColorWhite)
+        local border = 3
+        gfx.fillRoundRect(border, border, resultsImageWidth - border*2, resultsImageHeight - border*2, 3)
+        gfx.drawTextAligned("LVL  " .. self.level .. "  CLEAR!", resultsImageWidth / 2, 10, kTextAlignment.center)
+        local gemImage = gfx.image.new("images/shop/gem")
+        local gemAmount = self.level * 5
+        GEMS += gemAmount
+        gemImage:draw(50, 35)
+        gfx.drawText(gemAmount, 75, 35)
+        local xpGained = self.level * 3
+        local curXP = PETS[SELECTED_PET].xp
+        local curLvl = PETS[SELECTED_PET].level
+        local newLevel = math.floor((curXP + xpGained) ^ (1 / 3) - 1)
+        if newLevel < 2 then
+            newLevel = 1
+        end
+        local levelText = tostring(newLevel)
+        if curLvl ~= newLevel then
+            levelText = levelText .. " *LVL UP*"
+        end
+        PETS[SELECTED_PET].xp = curXP + xpGained
+        PETS[SELECTED_PET].level = newLevel
+
+        gfx.drawText("*XP: *", 43, 60)
+        gfx.drawText(xpGained, 75, 60)
+        gfx.drawText("*Pet Lvl:* ", 10, 85)
+        gfx.drawText(levelText, 75, 85)
+    gfx.pushContext()
+    self.resultsSprite:setImage(resultsImage)
+    self.playerDeathAnimator = gfx.animator.new(1000, self.playerSprite.y, 260, pd.easingFunctions.inBack)
+    self.resultsAnimator = gfx.animator.new(1200, self.resultsSprite.y, 120, pd.easingFunctions.inOutCubic)
 end
 
 function BattleScene:attackSingle(dmg, delay)

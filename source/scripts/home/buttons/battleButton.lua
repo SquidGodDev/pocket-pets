@@ -1,4 +1,5 @@
 import "scripts/home/buttons/button"
+import "scripts/battle/battleScene"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -11,5 +12,5 @@ function BattleButton:init(x, y, foodList, petList)
 end
 
 function BattleButton:pressButton()
-    
+    SceneManager:switchScene(BattleScene)
 end
