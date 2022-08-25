@@ -52,7 +52,7 @@ function FoodList:init()
     self:moveTo(400, 0)
     self:setZIndex(500)
 
-    self.eatSound = pd.sound.sampleplayer.new("sound/home/eat")
+    self.eatSound = pd.sound.sampleplayer.new("sound/home/chomp")
     self.slideSound = pd.sound.sampleplayer.new("sound/UI/transitionWhoosh")
 end
 

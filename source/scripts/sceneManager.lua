@@ -1,4 +1,5 @@
 import "scripts/home/homeScene"
+import "scripts/battle/battleScene"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
@@ -18,6 +19,20 @@ function SceneManager:switchScene(scene, ...)
     end
     if scene == HomeScene then
         self.transitionSound:play()
+        local menuItems = pd.getSystemMenu():getMenuItems()
+        local musicOn = menuItems[1]:getValue()
+        if musicOn then
+            if not BgMusic:isPlaying() then
+                if IS_DAYTIME() then
+                    BgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
+                else
+                    BgMusic = pd.sound.sampleplayer.new("sound/cloud")
+                end
+                BgMusic:play(0)
+            end
+        end
+    elseif scene == BattleScene then
+        BgMusic:stop()
     end
     self.transitionAnimator = gfx.animator.new(self.transitionTime, 0, self.transitionWidth, pd.easingFunctions.inOutCubic)
     self.transitioningIn = true

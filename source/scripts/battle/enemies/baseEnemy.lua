@@ -26,6 +26,9 @@ function BaseEnemy:init(battleScene, image)
     self:add()
 
     self.dead = false
+
+    self.warningSound = pd.sound.sampleplayer.new("sound/battle/warning")
+    self.attackSound = pd.sound.sampleplayer.new("sound/battle/enemySlice")
 end
 
 function BaseEnemy:update()
@@ -71,6 +74,7 @@ function BaseEnemy:damage(dmg)
 end
 
 function BaseEnemy:attack()
+    self.warningSound:play()
     local attackDist = 10
     local attackOutLine = pd.geometry.lineSegment.new(self.x, self.y, self.x - attackDist, self.y)
     local attackInLine = pd.geometry.lineSegment.new(self.x - attackDist, self.y, self.x, self.y)
@@ -105,6 +109,7 @@ function BaseEnemy:singleAttack(dmg, x, y)
         if self.dead then
             return
         end
+        self.attackSound:play()
         self.battleScene:damagePlayer(dmg, x, y)
         local gridBaseX = self.battleScene.gridBaseX
         local gridBaseY = self.battleScene.gridBaseY

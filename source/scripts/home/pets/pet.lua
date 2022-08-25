@@ -80,7 +80,7 @@ function Pet:update()
 
     local _, accelCrankChange = pd.getCrankChange()
     if math.abs(accelCrankChange) > 4 then
-        if not self.pettingSound:isPlaying() then
+        if not self.pettingSound:isPlaying() and not self.foodList.listOut then
             self.pettingSound:play()
         end
         self.petting = true
@@ -88,6 +88,7 @@ function Pet:update()
         Signals:notify("updateStatDisplay")
     else
         self.petting = false
+        self.pettingSound:stop()
     end
 
     if self.petting and not self.foodList.listOut then

@@ -102,7 +102,7 @@ function BattleScene:init()
         lettuce = self.slowGrowth,
         pumpkin = self.verySlowGrowth,
         carrot = self.medGrowth,
-        pear = self.medGrowth,
+        pear = self.verySlowGrowth,
         grape = self.medGrowth,
         strawberry = self.slowGrowth,
         corn = self.medGrowth
@@ -132,6 +132,7 @@ function BattleScene:init()
     self:drawEnemyHealth()
 
     self.levelTransitionPrompt = gfx.sprite.new()
+    self.levelTransitionPrompt:setZIndex(500)
     self.levelTransitionPrompt:moveTo(200, -10)
     self.levelTransitionPrompt:add()
     self.level = 0
@@ -143,6 +144,29 @@ function BattleScene:init()
     self.resultsSprite:setZIndex(500)
     self.resultsSprite:moveTo(200, -50)
     self.resultsSprite:add()
+
+    self.plantSound = pd.sound.sampleplayer.new("sound/garden/plant")
+    self.sliceSound = pd.sound.sampleplayer.new("sound/battle/slice")
+    self.hitSound = pd.sound.sampleplayer.new("sound/battle/hit")
+    self.winSound = pd.sound.sampleplayer.new("sound/battle/win")
+    self.loseSound = pd.sound.sampleplayer.new("sound/battle/lose")
+    self.hurtSound = pd.sound.sampleplayer.new("sound/battle/hurt")
+    self.powerUpSound = pd.sound.sampleplayer.new("sound/battle/powerUp")
+
+    self.battleMusic = pd.sound.sampleplayer.new("sound/battle/funnyBit")
+    local menuItems = pd.getSystemMenu():getMenuItems()
+    local musicOn = menuItems[1]:getValue()
+    if musicOn then
+        self.battleMusic:play(0)
+    end
+
+    self.lost = false
+
+    self.playerMoved = false
+    local refreshImage = gfx.image.new(50, 50, gfx.kColorWhite)
+    self.refreshSprite = gfx.sprite.new(refreshImage)
+    self.refreshSprite:setZIndex(-500)
+    self.refreshSprite:moveTo(158, 139)
 end
 
 function BattleScene:update()
@@ -156,6 +180,7 @@ function BattleScene:update()
             self.enemyEntranceAnimator = gfx.animator.new(1000, self.enemyBaseX + 100, self.enemyBaseX, pd.easingFunctions.inOutCubic)
             self.enemyHealthAnimator = gfx.animator.new(1000, 0, self.enemyInstance.maxHealth, pd.easingFunctions.inOutCubic)
             self.gameState = 'loadNewEnemy'
+            self.powerUpSound:play()
         end
     elseif self.gameState == 'loadNewEnemy' then
         self.enemyInstance.health = self.enemyHealthAnimator:currentValue()
@@ -170,6 +195,7 @@ function BattleScene:update()
         self.resultsSprite:moveTo(self.resultsSprite.x, self.resultsAnimator:currentValue())
         if self.resultsAnimator:ended() then
             if pd.buttonJustPressed(pd.kButtonA) then
+                self.battleMusic:stop()
                 SceneManager:switchScene(HomeScene)
             end
         end
@@ -232,6 +258,10 @@ function BattleScene:battleUpdate()
 end
 
 function BattleScene:movePlayer(x, y)
+    if not self.playerMoved then
+        self.playerMoved = true
+        self.refreshSprite:add()
+    end
     self.playerX += x
     if self.playerX < 1 then
         self.playerX = 1
@@ -306,6 +336,7 @@ function BattleScene:drawGarden()
 end
 
 function BattleScene:plantSeed()
+    self.plantSound:play()
     local nextSeed = table.remove(self.plantQueue, 1)
     self:addNewPlantToQueue()
     self:drawQueue()
@@ -350,10 +381,12 @@ function BattleScene:damageEnemy(dmg, row)
         return
     end
     if row == self.enemyInstance.row then
+        self.hitSound:play()
         self.enemyInstance:damage(dmg)
         if self.enemyInstance.health <= 0 then
             self:drawEnemyHealth()
             self.enemyInstance = nil
+            self.winSound:play()
             self:levelDefeated()
         end
         self:drawEnemyHealth()
@@ -367,8 +400,17 @@ function BattleScene:createWarning(x, y)
 end
 
 function BattleScene:damagePlayer(dmg, x, y)
+    if self.lost then
+        return
+    end
+
     if x == self.playerX and y == self.playerY then
+        self.hurtSound:play()
         self.playerHealth -= dmg
+        self.playerSprite:setVisible(false)
+        pd.timer.new(100, function()
+            self.playerSprite:setVisible(true)
+        end)
         if self.playerHealth <= 0 then
             self.playerHealth = 0
             self:playerDied()
@@ -378,6 +420,8 @@ function BattleScene:damagePlayer(dmg, x, y)
 end
 
 function BattleScene:playerDied()
+    self.lost = true
+    self.loseSound:play()
     self.gameState = 'results'
     local resultsImageWidth, resultsImageHeight = 160, 110
     local resultsImage = gfx.image.new(resultsImageWidth, resultsImageHeight)
@@ -419,13 +463,16 @@ end
 function BattleScene:attackSingle(dmg, delay)
     local attackRow = self.playerY
     pd.timer.new(delay, function()
+        self.sliceSound:play()
         self:createAttackSprite(attackRow)
         self:damageEnemy(dmg, attackRow)
     end)
 end
 
 function BattleScene:attackArea(dmg)
+    self.sliceSound:play()
     for i=1,3 do
+        self:createAttackSprite(i)
         self:damageEnemy(dmg, i)
     end
 end
@@ -501,8 +548,11 @@ function BattleScene:harvestPlant(plotData)
     elseif plant == "carrot" then
         self:attackSingle(15, 500)
     elseif plant == "pear" then
-        self:shield()
         self:attackSingle(5, 0)
+        self:attackSingle(5, 500)
+        self:attackSingle(5, 1000)
+        self:attackSingle(5, 1500)
+        self:attackSingle(5, 2000)
     elseif plant == "grape" then
         self:attackSingle(5, 0)
         self:attackSingle(5, 500)

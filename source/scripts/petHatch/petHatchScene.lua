@@ -193,10 +193,7 @@ function PetHatchScene:showToast(text, duration, x, y)
     gfx.popContext()
     toastSprite:setImage(toastImage)
 
-    print("HERE!!")
-
     t.timerEndedCallback = function()
-        print("TIMER ENDED!")
         toastSprite:remove()
     end
 end

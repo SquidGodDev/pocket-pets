@@ -30,6 +30,9 @@ function StatsUI:init(x, y)
     Signals:subscribe("updateStatDisplay", self, function()
         self:updateStatsDisplay()
     end)
+
+    self.sadSound = pd.sound.sampleplayer.new("sound/home/whimper")
+    self.sadRepeat = true
 end
 
 function StatsUI:update()
@@ -37,6 +40,16 @@ function StatsUI:update()
         self:updateHunger(-1)
     end
     self.updateCounter += 1
+
+    if self.hunger <= 20 then
+        if self.sadRepeat then
+            self.sadRepeat = false
+            self.sadSound:play()
+            pd.timer.new(10000, function()
+                self.sadRepeat = true
+            end)
+        end
+    end
 end
 
 function StatsUI:initializeStats()
@@ -95,21 +108,6 @@ function StatsUI:updateStatsDisplay()
         gfx.drawText(xpText, 55, 70)
     gfx.popContext()
     self:setImage(statDisplayImage)
-
-    self.sadSound = pd.sound.sampleplayer.new("sound/home/whimper")
-    self.sadRepeat = true
-end
-
-function StatsUI:update()
-    if self.hunger <= 20 then
-        if self.sadRepeat then
-            self.sadRepeat = false
-            self.sadSound:play()
-            pd.timer.new(10000, function()
-                self.sadRepeat = true
-            end)
-        end
-    end
 end
 
 function StatsUI:updateHunger(change)
