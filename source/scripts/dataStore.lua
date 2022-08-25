@@ -13,22 +13,23 @@ WISH_GRANT_TIME = {
 -- === PETS ===
 PET_TYPES = {'bat', 'buffBunny', 'cat', 'chicken', 'crab', 'dog', 'duck', 'hedgehog', 'snake', 'whale', 'wingedUnicorn'}
 
-SELECTED_PET = "Hachi"
+SELECTED_PET = ""
 
-PETS = {
-    Hachi = {
-        type = "dog",
-        hunger = {
-            level = 50,
-            lastTime = playdate.getTime()
-        },
-        lastPet = playdate.getTime(),
-        lastGamePlay = playdate.getTime(),
-        level = 0,
-        xp = 0,
-        plantDeck = {'carrot', 'grape', 'potato', 'turnip', 'eggplant', 'strawberry'}
-    }
-}
+PETS = {}
+-- PETS = {
+--     Hachi = {
+--         type = "dog",
+--         hunger = {
+--             level = 50,
+--             lastTime = playdate.getTime()
+--         },
+--         lastPet = playdate.getTime(),
+--         lastGamePlay = playdate.getTime(),
+--         level = 0,
+--         xp = 0,
+--         plantDeck = {'carrot', 'grape', 'potato', 'turnip', 'eggplant', 'strawberry'}
+--     }
+-- }
 
 -- === GARDEN ===
 PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot', 'mushroom', 'pumpkin', 'pineapple', 'apple', 'pear', 'corn', 'strawberry', 'grape'}
@@ -37,7 +38,7 @@ PLANT_INVENTORY = {}
 for _, plant in ipairs(PLANTS_IN_ORDER) do
     PLANT_INVENTORY[plant] = {
         seeds = 0,
-        plant = 10
+        plant = 0
     }
 end
 
