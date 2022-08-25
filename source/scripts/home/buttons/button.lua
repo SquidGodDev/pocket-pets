@@ -12,6 +12,8 @@ function Button:init(x, y, foodList, petList, buttonImageTable)
     self.selected = false
     self:moveTo(x, y)
     self:add()
+
+    self.buttonSound = pd.sound.sampleplayer.new("sound/UI/click")
 end
 
 function Button:update()
@@ -24,6 +26,7 @@ function Button:update()
     if self.selected and not listOut then
         if pd.buttonJustPressed(pd.kButtonA) then
             self:pressButton()
+            self.buttonSound:play()
         end
 
         if pd.buttonIsPressed(pd.kButtonA) then

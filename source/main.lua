@@ -32,6 +32,26 @@ else
     HomeScene()
 end
 
+local bgMusic
+if IS_DAYTIME() then
+    bgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
+else
+    bgMusic = pd.sound.sampleplayer.new("sound/cloud")
+end
+bgMusic:play(0)
+
+local menu = pd.getSystemMenu()
+
+menu:addCheckmarkMenuItem("Music", true, function(flag)
+    if flag then
+        if not bgMusic:isPlaying() then
+            bgMusic:play(0)
+        end
+    else
+        bgMusic:stop()
+    end
+end)
+
 -- BattleScene()
 
 function pd.update()

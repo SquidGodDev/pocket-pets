@@ -63,6 +63,9 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     self.updateCounter = 0
     self.updateRate = 100
     self:updatePlants()
+
+    self.plantSound = pd.sound.sampleplayer.new("sound/garden/plant")
+    self.harvestSound = pd.sound.sampleplayer.new("sound/garden/plantHarvest")
 end
 
 function GardenGrid:update()
@@ -80,6 +83,7 @@ function GardenGrid:update()
         if not plotData then
             local plantSeeds = PLANT_INVENTORY[selectedPlant].seeds
             if plantSeeds > 0 then
+                self.plantSound:play()
                 PLANT_INVENTORY[selectedPlant].seeds -= 1
                 GARDEN_DATA[row][column] = {
                     plant = selectedPlant,
@@ -87,9 +91,11 @@ function GardenGrid:update()
                     growTime = self:getRandomGrowthTime()
                 }
                 forceRedrawGrid = true
+
             end
         else
             if plotData.grown then
+                self.harvestSound:play()
                 PLANT_INVENTORY[plotData.plant].plant += 1
                 GARDEN_DATA[row][column] = nil
                 forceRedrawGrid = true

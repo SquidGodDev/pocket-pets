@@ -75,18 +75,27 @@ function ShopScene:init()
     end
 
     self.eggPurchased = false
+
+    self.humSound = pd.sound.sampleplayer.new("sound/shop/hum")
+    self.purchaseSound = pd.sound.sampleplayer.new("sound/shop/purchase")
+    self.clickSound = pd.sound.sampleplayer.new("sound/UI/click")
+    self.humSound:play(0)
 end
 
 function ShopScene:update()
     local forceUpdate = false
 
     if pd.buttonJustPressed(pd.kButtonDown) then
+        self.clickSound:play()
         self.shopGrid:selectNextRow(false)
     elseif pd.buttonJustPressed(pd.kButtonUp) then
+        self.clickSound:play()
         self.shopGrid:selectPreviousRow(false)
     elseif pd.buttonJustPressed(pd.kButtonLeft) then
+        self.clickSound:play()
         self.shopGrid:selectPreviousColumn(false)
     elseif pd.buttonJustPressed(pd.kButtonRight) then
+        self.clickSound:play()
         self.shopGrid:selectNextColumn(false)
     end
 
@@ -96,6 +105,7 @@ function ShopScene:update()
             if GARDEN_LEVEL < #GARDEN_LEVELS then
                 local gardenUpgradePrice = self:getGardenUpgradePrice()
                 if GEMS >= gardenUpgradePrice then
+                    self.purchaseSound:play()
                     forceUpdate = true
                     GEMS -= gardenUpgradePrice
                     GARDEN_LEVEL += 1
@@ -104,6 +114,8 @@ function ShopScene:update()
         elseif shopIndex == 6 then
             local eggPrice = self:getEggPrice()
             if GEMS >= eggPrice and not self.eggPurchased then
+                self.purchaseSound:play()
+                self.humSound:stop()
                 self.eggPurchased = true
                 forceUpdate = true
                 GEMS -= eggPrice
@@ -114,6 +126,7 @@ function ShopScene:update()
             local shopItemName = shopItem.plant
             local shopItemPrice = shopItem.price
             if GEMS >= shopItemPrice then
+                self.purchaseSound:play()
                 forceUpdate = true
                 GEMS -= shopItemPrice
                 PLANT_INVENTORY[shopItemName].seeds += 1
@@ -122,6 +135,7 @@ function ShopScene:update()
     end
 
     if pd.buttonJustPressed(pd.kButtonB) then
+        self.humSound:stop()
         SceneManager:switchScene(HomeScene)
     end
 

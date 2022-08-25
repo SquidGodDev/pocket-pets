@@ -51,6 +51,9 @@ function FoodList:init()
     self:setCenter(0, 0)
     self:moveTo(400, 0)
     self:setZIndex(500)
+
+    self.eatSound = pd.sound.sampleplayer.new("sound/home/eat")
+    self.slideSound = pd.sound.sampleplayer.new("sound/UI/transitionWhoosh")
 end
 
 function FoodList:update()
@@ -65,6 +68,7 @@ function FoodList:update()
     end
 
     if self:navigationButtonPressed() and self.listOut then
+        self.slideSound:play()
         self:animateOffScreen()
         self.listOut = false
     end
@@ -74,6 +78,7 @@ function FoodList:update()
         local selectedPlant = self:getSelectedPlant()
         local plantCount = PLANT_INVENTORY[selectedPlant].plant
         if plantCount > 0 then
+            self.eatSound:play()
             Signals:notify("feed", 10)
             Signals:notify("happy")
             PLANT_INVENTORY[selectedPlant].plant -= 1
@@ -112,6 +117,7 @@ end
 
 function FoodList:openList()
     if not self.listOut then
+        self.slideSound:play()
         self:add()
         self:animateOnScreen()
         self.listOut = true

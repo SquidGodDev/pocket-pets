@@ -30,6 +30,8 @@ function HomeButtons:init(foodList, petList)
     self.selectSprite:moveTo(self.buttonBaseX + (SELECTED_HOME_BUTTON - 1) * self.buttonXGap, self.buttonBaseY)
     self.selectSprite:add()
 
+    self.clickSound = pd.sound.sampleplayer.new("sound/UI/mouseClick")
+
     self:add()
 end
 
@@ -50,6 +52,7 @@ end
 
 function HomeButtons:moveCursorLeft()
     if SELECTED_HOME_BUTTON > 1 then
+        self.clickSound:play()
         local selectedButton = self.homeButtons[SELECTED_HOME_BUTTON]
         selectedButton:select(false)
         SELECTED_HOME_BUTTON -= 1
@@ -62,6 +65,7 @@ end
 
 function HomeButtons:moveCursorRight()
     if SELECTED_HOME_BUTTON < #self.homeButtons then
+        self.clickSound:play()
         local selectedButton = self.homeButtons[SELECTED_HOME_BUTTON]
         selectedButton:select(false)
         SELECTED_HOME_BUTTON += 1

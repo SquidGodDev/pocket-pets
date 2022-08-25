@@ -62,6 +62,8 @@ function Pet:init(x, y, type, foodList)
     Signals:subscribe("sad", self, function(_, _, flag)
         self:sad(flag)
     end)
+
+    self.pettingSound = pd.sound.sampleplayer.new("sound/home/brushing")
 end
 
 function Pet:update()
@@ -78,6 +80,9 @@ function Pet:update()
 
     local _, accelCrankChange = pd.getCrankChange()
     if math.abs(accelCrankChange) > 4 then
+        if not self.pettingSound:isPlaying() then
+            self.pettingSound:play()
+        end
         self.petting = true
         PETS[SELECTED_PET].lastPet = pd.getTime()
         Signals:notify("updateStatDisplay")

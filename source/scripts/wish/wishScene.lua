@@ -50,10 +50,15 @@ function WishScene:init()
         self.noWishSprite:setImage(noWishImage)
         self.noWishSprite:add()
     end
+
+    self.sparkleSound = pd.sound.sampleplayer.new("sound/wish/sparkle")
+    self.jingleSound = pd.sound.sampleplayer.new("sound/wish/jingle")
+    self.jingleSound:play()
 end
 
 function WishScene:update()
     if pd.buttonJustPressed(pd.kButtonA) and not WISH_GRANTED then
+        self.sparkleSound:play()
         WISH_GRANTED = true
         local curTime = pd.getTime()
         WISH_GRANT_TIME = {

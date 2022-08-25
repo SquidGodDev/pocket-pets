@@ -55,6 +55,8 @@ function PetListScene:init()
     self.petInfoSprite:setCenter(0, 0)
     self.petInfoSprite:moveTo(165, 23)
     self.petInfoSprite:add()
+
+    self.clickSound = pd.sound.sampleplayer.new("sound/UI/click")
 end
 
 function PetListScene:update()
@@ -67,8 +69,10 @@ function PetListScene:update()
 
     local crankTicks = pd.getCrankTicks(4)
     if pd.buttonJustPressed(pd.kButtonDown) or crankTicks == 1 then
+        self.clickSound:play()
         self.petList:selectNextRow(true)
     elseif pd.buttonJustPressed(pd.kButtonUp) or crankTicks == -1 then
+        self.clickSound:play()
         self.petList:selectPreviousRow(true)
     end
 

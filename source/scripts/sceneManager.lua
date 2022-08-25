@@ -1,3 +1,4 @@
+import "scripts/home/homeScene"
 
 local pd <const> = playdate
 local gfx <const> = playdate.graphics
@@ -6,13 +7,17 @@ class('SceneManager').extends()
 
 function SceneManager:init()
     self.transitionWidth = 400
-    self.transitionTime = 600
+    self.transitionTime = 500
     self.transitioningIn = false
+    self.transitionSound = pd.sound.sampleplayer.new("sound/UI/transitionWhoosh")
 end
 
 function SceneManager:switchScene(scene, ...)
     if self.transitioningIn then
         return
+    end
+    if scene == HomeScene then
+        self.transitionSound:play()
     end
     self.transitionAnimator = gfx.animator.new(self.transitionTime, 0, self.transitionWidth, pd.easingFunctions.inOutCubic)
     self.transitioningIn = true

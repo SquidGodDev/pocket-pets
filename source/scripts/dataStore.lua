@@ -1,5 +1,5 @@
 -- === SHOP ===
-GEMS = 0
+GEMS = 100
 DAILY_SHOP_ITEMS = nil
 
 -- === WISH ===

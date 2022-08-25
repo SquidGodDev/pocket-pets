@@ -61,11 +61,14 @@ function PetHatchScene:init()
         -- self.inputBoxAnimator = gfx.animator.new(200, self.inputBox.y, self.inputBoxStartY, pd.easingFunctions.inOutCubic)
         if not flag then
             pd.keyboard.text = ""
+            self.whooshSound:play()
         else
             local keyboardText = pd.keyboard.text
             if PETS[keyboardText] then
                 self:showToast("Name already used", 2000, 120, 150)
+                self.whooshSound:play()
             else
+                self.acceptSound:play()
                 self:createNewPet(keyboardText)
                 SceneManager:switchScene(HomeScene)
             end
@@ -84,6 +87,10 @@ function PetHatchScene:init()
     end
 
     self.petType = PET_TYPES[math.random(1, #PET_TYPES)]
+
+    self.eggShakeSound = pd.sound.sampleplayer.new("sound/petHatch/eggShake")
+    self.whooshSound = pd.sound.sampleplayer.new("sound/petHatch/whoosh")
+    self.acceptSound = pd.sound.sampleplayer.new("sound/petHatch/accept")
 end
 
 function PetHatchScene:update()
@@ -94,15 +101,19 @@ function PetHatchScene:update()
         if crankTicks ~= 0 then
             self.crankCount += 1
             if self.crankCount == 1 then
+                self.eggShakeSound:play()
                 self.fullEggSequence = sequence.new():from(self.baseEggX):to(self.baseEggX - self.eggShakeOffset, self.eggShakeTime, "linear"):to(self.baseEggX, self.eggShakeTime, "linear")
                 self.fullEggSequence:start()
             elseif self.crankCount == 2 then
+                self.eggShakeSound:play()
                 self.fullEggSequence = sequence.new():from(self.baseEggX):to(self.baseEggX + self.eggShakeOffset, self.eggShakeTime, "linear"):to(self.baseEggX, self.eggShakeTime, "linear")
                 self.fullEggSequence:start()
             elseif self.crankCount == 3 then
+                self.eggShakeSound:play()
                 self.fullEggSequence = sequence.new():from(self.baseEggX):to(self.baseEggX - self.eggShakeOffset, self.eggShakeTime, "linear"):to(self.baseEggX, self.eggShakeTime, "linear")
                 self.fullEggSequence:start()
             elseif self.crankCount == 4 then
+                self.eggShakeSound:play()
                 self.shakeAnimationFinished = true
                 self.fullEggSprite:remove()
                 local petImageTable = gfx.imagetable.new("images/pets/"..self.petType.."-table-32-32")
@@ -123,6 +134,7 @@ function PetHatchScene:update()
         local crankChange = pd.getCrankChange()
         self.topEggSprite:moveBy(0, -math.abs(crankChange / 20))
         if self.topEggSprite.y < 50 then
+            self.whooshSound:play()
             self.animationFinished = true
             self.showKeyboard = true
             self.inputBoxAnimator = gfx.animator.new(200, self.inputBox.y, self.inputBoxEndY, pd.easingFunctions.inOutCubic)
@@ -133,6 +145,7 @@ function PetHatchScene:update()
         pd.keyboard.show()
     elseif pd.buttonJustPressed(pd.kButtonA) and self.animationFinished then
         self.showKeyboard = true
+        self.whooshSound:play()
     end
 
     if self.inputBoxAnimator then
