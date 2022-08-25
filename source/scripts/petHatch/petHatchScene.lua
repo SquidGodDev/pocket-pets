@@ -153,7 +153,7 @@ function PetHatchScene:createNewPet(name)
         },
         lastPet = playdate.getTime(),
         lastGamePlay = playdate.getTime(),
-        level = 1,
+        level = 0,
         xp = 0,
         plantDeck = {}
     }

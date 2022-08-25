@@ -26,13 +26,13 @@ math.randomseed(pd.getSecondsSinceEpoch())
 SceneManager = SceneManager()
 Signals = Signal()
 
--- if SELECTED_PET == "" then
---     PetHatchScene()
--- else
---     HomeScene()
--- end
+if SELECTED_PET == "" then
+    PetHatchScene()
+else
+    HomeScene()
+end
 
-BattleScene()
+-- BattleScene()
 
 function pd.update()
     gfx.sprite.update()

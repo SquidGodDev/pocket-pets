@@ -84,8 +84,15 @@ function StatsUI:updateStatsDisplay()
         gfx.drawText("*Name: *" .. SELECTED_PET, 6, 3)
         local meterWidth = 96
         local meterHeight = 13
-        gfx.fillRect(25, 25, (self.happiness / 100) * meterWidth, meterHeight)
-        gfx.fillRect(25, 48, (self.hunger / 100) * meterWidth, meterHeight)
+        gfx.fillRect(25, 25, math.ceil(self.happiness / 100 * meterWidth), meterHeight)
+        gfx.fillRect(25, 48, math.ceil(self.hunger / 100 * meterWidth), meterHeight)
+        local curLevel = PETS[SELECTED_PET].level
+        local levelText = tostring(curLevel)
+        local xpRequired = math.floor((curLevel + 2)^3 - (curLevel + 1) ^ 3) + 1
+        local curXp = math.floor(PETS[SELECTED_PET].xp - (curLevel + 1) ^ 3) + 1
+        local xpText = "XP: " .. curXp .. "/" .. xpRequired
+        gfx.drawText(levelText, 27, 70)
+        gfx.drawText(xpText, 55, 70)
     gfx.popContext()
     self:setImage(statDisplayImage)
 end

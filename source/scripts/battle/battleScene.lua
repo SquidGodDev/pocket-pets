@@ -30,7 +30,7 @@ function BattleScene:init()
     self.playerX = 2
     self.playerY = 2
     self.playerMaxHealth = 100
-    self.playerHealth = 5 --self.playerMaxHealth
+    self.playerHealth = self.playerMaxHealth
 
     local petType = PETS[SELECTED_PET].type
     local petImageTable = gfx.imagetable.new("images/pets/"..petType.."-table-32-32")
@@ -399,9 +399,6 @@ function BattleScene:playerDied()
         local curXP = PETS[SELECTED_PET].xp
         local curLvl = PETS[SELECTED_PET].level
         local newLevel = math.floor((curXP + xpGained) ^ (1 / 3) - 1)
-        if newLevel < 2 then
-            newLevel = 1
-        end
         local levelText = tostring(newLevel)
         if curLvl ~= newLevel then
             levelText = levelText .. " *LVL UP*"
