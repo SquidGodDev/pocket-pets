@@ -92,6 +92,19 @@ function PetListScene:drawPetInfo()
         local petImage = petImageTable:getImage(1)
         petImage:draw(95, 12)
         gfx.drawTextAligned("*"..selectedPet.."*", self.petInfoWidth / 2, 60, kTextAlignment.center)
+        local plantDeck = PETS[selectedPet].plantDeck
+        local baseX, baseY = 16, 98
+        local gapX, gapY = 39, 47
+        for index, plant in ipairs(plantDeck) do
+            local drawY = baseY
+            if index > 5 then
+                index -= 5
+                drawY += gapY
+            end
+            local drawX = baseX + (index - 1) * gapX
+            local plantImage = gfx.image.new("images/garden/plants/" .. plant):scaledImage(2):invertedImage()
+            plantImage:draw(drawX, drawY)
+        end
     gfx.popContext()
     self.petInfoSprite:setImage(petInfoImage)
 end
