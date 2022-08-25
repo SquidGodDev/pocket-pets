@@ -41,6 +41,7 @@ for _, plant in ipairs(PLANTS_IN_ORDER) do
         plant = 0
     }
 end
+PLANT_INVENTORY['turnip'].seeds = 10
 
 GARDEN_DATA = {}
 for row=1,5 do

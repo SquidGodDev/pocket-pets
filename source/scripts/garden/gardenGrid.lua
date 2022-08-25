@@ -132,20 +132,20 @@ function GardenGrid:update()
 end
 
 function GardenGrid:getRandomGrowthTime()
-    local minTime = 5
-    local maxTime = 20
-    local elapsedSeconds = pd.getElapsedTime()
-    return elapsedSeconds + math.random(minTime, maxTime)
+    local minTime = 600
+    local maxTime = 1200
+    local secondsSinceEpoch = pd.getSecondsSinceEpoch()
+    return secondsSinceEpoch + math.random(minTime, maxTime)
 end
 
 function GardenGrid:updatePlants()
     local hasUpdated = false
-    local elapsedSeconds = pd.getElapsedTime()
+    local secondsSinceEpoch = pd.getSecondsSinceEpoch()
     for i=self.minRow, self.maxRow do
         for j=self.minCol, self.maxCol do
             local plotData = GARDEN_DATA[i][j]
             if plotData then
-                if not plotData.grown and (elapsedSeconds >= plotData.growTime) then
+                if not plotData.grown and (secondsSinceEpoch >= plotData.growTime) then
                     GARDEN_DATA[i][j].grown = true
                     hasUpdated = true
                 end
