@@ -108,7 +108,7 @@ function WishScene:getRandomReward()
         GEMS += self.rewardAmount
     else
         self.gemReward = false
-        self.rewardAmount = math.random(3, 15)
+        self.rewardAmount = math.random(2, 6)
         self.rewardSeed = PLANTS_IN_ORDER[math.random(1, #PLANTS_IN_ORDER)]
         PLANT_INVENTORY[self.rewardSeed].seeds += self.rewardAmount
     end
