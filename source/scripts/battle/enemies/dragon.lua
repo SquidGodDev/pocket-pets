@@ -10,7 +10,7 @@ function Dragon:init(battleScene)
     Dragon.super.init(self, battleScene, enemyImage)
     self.maxHealth = 150
     self.health = self.maxHealth
-    self.moveTime = 100
+    self.moveTime = 1000
     self.attackDmg = 15
 end
 

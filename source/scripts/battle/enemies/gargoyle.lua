@@ -12,6 +12,7 @@ function Gargoyle:init(battleScene)
     self.health = self.maxHealth
     self.moveTime = 1000
     self.attackDmg = 15
+    self.teleporter = true
 end
 
 function Gargoyle:attack()

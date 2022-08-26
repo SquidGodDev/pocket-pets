@@ -27,7 +27,7 @@ PETS = {}
 --         lastGamePlay = playdate.getTime(),
 --         level = 0,
 --         xp = 0,
---         plantDeck = {'carrot', 'grape', 'potato', 'turnip', 'eggplant', 'strawberry'}
+--         plantDeck = {'carrot', 'grape', 'potato', 'turnip', 'eggplant', 'strawberry', 'apple', 'pear'}
 --     }
 -- }
 

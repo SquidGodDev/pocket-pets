@@ -22,6 +22,14 @@ local gfx <const> = pd.graphics
 class('BattleScene').extends(gfx.sprite)
 
 function BattleScene:init()
+    self.plantImages = {}
+    for i, plantType in ipairs(PLANTS_IN_ORDER) do
+        local plantImage = gfx.image.new("images/garden/plants/" .. plantType)
+        plantImage:setInverted(true)
+        self.plantImages[plantType] = plantImage:scaledImage(2)
+    end
+
+
     local battleBackground = gfx.image.new("images/battle/battleBackground")
     self:moveTo(200, 120)
     self:setImage(battleBackground)
@@ -29,7 +37,7 @@ function BattleScene:init()
 
     self.playerX = 2
     self.playerY = 2
-    self.playerMaxHealth = 100
+    self.playerMaxHealth = 50
     self.playerHealth = self.playerMaxHealth
 
     local petType = PETS[SELECTED_PET].type
@@ -91,22 +99,27 @@ function BattleScene:init()
     self.medGrowth = 4000
     self.slowGrowth = 6000
     self.verySlowGrowth = 8000
+    self.superSlowGrowth = 10000
     self.plantGrowthTimes = {
         turnip = self.fastGrowth,
         potato = self.medGrowth,
         eggplant = self.slowGrowth,
-        cherry = self.fastGrowth,
-        apple = self.medGrowth,
-        pineapple = self.slowGrowth,
-        mushroom = self.medGrowth,
-        lettuce = self.slowGrowth,
-        pumpkin = self.verySlowGrowth,
+        cherry = self.verySlowGrowth,
+        apple = self.superSlowGrowth,
+        pineapple = 12000,
+        mushroom = self.slowGrowth,
+        lettuce = self.verySlowGrowth,
+        pumpkin = self.superSlowGrowth,
         carrot = self.medGrowth,
         pear = self.verySlowGrowth,
         grape = self.medGrowth,
-        strawberry = self.slowGrowth,
-        corn = self.medGrowth
+        strawberry = 12000,
+        corn = self.slowGrowth
     }
+
+    local seedImage = gfx.image.new("images/garden/plants/seeds")
+    seedImage:setInverted(true)
+    self.seedImage = seedImage:scaledImage(2)
 
     self.playerHealthSprite = gfx.sprite.new()
     self.playerHealthSprite:setCenter(0, 0)
@@ -152,6 +165,8 @@ function BattleScene:init()
     self.loseSound = pd.sound.sampleplayer.new("sound/battle/lose")
     self.hurtSound = pd.sound.sampleplayer.new("sound/battle/hurt")
     self.powerUpSound = pd.sound.sampleplayer.new("sound/battle/powerUp")
+    self.healSound = pd.sound.sampleplayer.new("sound/battle/heal")
+    self.growthSound = pd.sound.sampleplayer.new("sound/battle/growth")
 
     self.battleMusic = pd.sound.sampleplayer.new("sound/battle/funnyBit")
     local menuItems = pd.getSystemMenu():getMenuItems()
@@ -319,14 +334,10 @@ function BattleScene:drawGarden()
             if gardenPlot then
                 gardenSprite:setVisible(true)
                 if not gardenPlot.grown then
-                    local seedImage = gfx.image.new("images/garden/plants/seeds")
-                    seedImage:setInverted(true)
-                    gardenSprite:setImage(seedImage:scaledImage(2))
+                    gardenSprite:setImage(self.seedImage)
                 else
                     local plantType = gardenPlot.plant
-                    local plantImage = gfx.image.new("images/garden/plants/" .. plantType)
-                    plantImage:setInverted(true)
-                    gardenSprite:setImage(plantImage:scaledImage(2))
+                    gardenSprite:setImage(self.plantImages[plantType])
                 end
             else
                 gardenSprite:setVisible(false)
@@ -478,6 +489,7 @@ function BattleScene:attackArea(dmg)
 end
 
 function BattleScene:heal(amount)
+    self.healSound:play()
     self.playerHealth += amount
     if self.playerHealth >= self.playerMaxHealth then
         self.playerHealth = self.playerMaxHealth
@@ -490,6 +502,7 @@ function BattleScene:shield()
 end
 
 function BattleScene:growAll()
+    self.growthSound:play()
     for x=1,3 do
         for y=1,3 do
             local gardenPlot = self.gardenGrid[x][y]
@@ -505,6 +518,7 @@ function BattleScene:growAll()
 end
 
 function BattleScene:growRow()
+    self.growthSound:play()
     local y = self.playerY
     for x=1,3 do
         local gardenPlot = self.gardenGrid[x][y]
@@ -531,38 +545,30 @@ function BattleScene:harvestPlant(plotData)
     elseif plant == "eggplant" then
         self:attackSingle(15, 0)
     elseif plant == "cherry" then
-        self:heal(5)
-        self:attackSingle(5, 0)
+        self:heal(1)
     elseif plant == "apple" then
-        self:heal(10)
-        self:attackSingle(5, 0)
+        self:heal(2)
     elseif plant == "pineapple" then
-        self:heal(15)
-        self:attackSingle(5, 0)
+        self:heal(3)
     elseif plant == "mushroom" then
-        self:attackArea(5)
+        self:attackArea(2)
     elseif plant == "lettuce" then
-        self:attackArea(10)
+        self:attackArea(4)
     elseif plant == "pumpkin" then
-        self:attackArea(15)
+        self:attackArea(8)
     elseif plant == "carrot" then
         self:attackSingle(15, 500)
     elseif plant == "pear" then
+        self:heal(1)
         self:attackSingle(5, 0)
-        self:attackSingle(5, 500)
-        self:attackSingle(5, 1000)
-        self:attackSingle(5, 1500)
-        self:attackSingle(5, 2000)
     elseif plant == "grape" then
         self:attackSingle(5, 0)
         self:attackSingle(5, 500)
         self:attackSingle(5, 1000)
     elseif plant == "strawberry" then
         self:growAll()
-        self:attackSingle(5, 0)
     elseif plant == "corn" then
         self:growRow()
-        self:attackSingle(5, 0)
     end
 
     self.gardenGrid[self.playerX][self.playerY] = nil
@@ -571,11 +577,11 @@ end
 
 function BattleScene:getEnemyConstructor()
     local constructors
-    if self.level <= 5 then
+    if self.level <= 7 then
         constructors = {Goblin, Wendigo, Mimic}
-    elseif self.level <= 10 then
+    elseif self.level <= 14 then
         constructors = {Mermaid, Cyclops, Mandrake}
-    elseif self.level <= 15 then
+    elseif self.level <= 21 then
         constructors = {Kitsune, Phoenix, Cerberus}
     else
         constructors = {Gargoyle, Dragon, Djinn, Kraken}

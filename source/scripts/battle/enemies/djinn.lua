@@ -10,7 +10,7 @@ function Djinn:init(battleScene)
     Djinn.super.init(self, battleScene, enemyImage)
     self.maxHealth = 150
     self.health = self.maxHealth
-    self.moveTime = 400
+    self.moveTime = 600
     self.attackDmg = 15
 end
 
