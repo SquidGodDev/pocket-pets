@@ -77,7 +77,7 @@ function GardenGrid:update()
         forceRedrawGrid = self:updatePlants()
     end
 
-    if pd.buttonJustPressed(pd.kButtonA) then
+    if pd.buttonJustPressed(pd.kButtonA) and not self.seedList.listOut then
         local plotData = GARDEN_DATA[row][column]
         local selectedPlant = self.seedList:getSelectedPlant()
         if not plotData then

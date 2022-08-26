@@ -29,7 +29,6 @@ function BattleScene:init()
         self.plantImages[plantType] = plantImage:scaledImage(2)
     end
 
-
     local battleBackground = gfx.image.new("images/battle/battleBackground")
     self:moveTo(200, 120)
     self:setImage(battleBackground)
@@ -210,6 +209,7 @@ function BattleScene:update()
         self.resultsSprite:moveTo(self.resultsSprite.x, self.resultsAnimator:currentValue())
         if self.resultsAnimator:ended() then
             if pd.buttonJustPressed(pd.kButtonA) then
+                PETS[SELECTED_PET].lastGamePlay = pd.getTime()
                 self.battleMusic:stop()
                 SceneManager:switchScene(HomeScene)
             end
