@@ -36,7 +36,7 @@ function BattleScene:init()
 
     self.playerX = 2
     self.playerY = 2
-    self.playerMaxHealth = 50
+    self.playerMaxHealth = 10 + PETS[SELECTED_PET].level * 5
     self.playerHealth = self.playerMaxHealth
 
     local petType = PETS[SELECTED_PET].type
@@ -450,7 +450,7 @@ function BattleScene:playerDied()
         GEMS += gemAmount
         gemImage:draw(50, 35)
         gfx.drawText(gemAmount, 75, 35)
-        local xpGained = self.level * 3
+        local xpGained = math.floor(self.level^1.4 + 2)
         local curXP = PETS[SELECTED_PET].xp
         local curLvl = PETS[SELECTED_PET].level
         local newLevel = math.floor((curXP + xpGained) ^ (1 / 3) - 1)
@@ -577,11 +577,11 @@ end
 
 function BattleScene:getEnemyConstructor()
     local constructors
-    if self.level <= 7 then
+    if self.level <= 5 then
         constructors = {Goblin, Wendigo, Mimic}
-    elseif self.level <= 14 then
+    elseif self.level <= 10 then
         constructors = {Mermaid, Cyclops, Mandrake}
-    elseif self.level <= 21 then
+    elseif self.level <= 15 then
         constructors = {Kitsune, Phoenix, Cerberus}
     else
         constructors = {Gargoyle, Dragon, Djinn, Kraken}
