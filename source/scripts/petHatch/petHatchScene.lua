@@ -161,7 +161,7 @@ function PetHatchScene:createNewPet(name)
     local petData = {
         type = self.petType,
         hunger = {
-            level = 50,
+            level = 100,
             lastTime = pd.getTime()
         },
         lastPet = pd.getTime(),
