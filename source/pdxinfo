@@ -4,4 +4,4 @@ description=A virtual pet game for the Playdate
 bundleID=com.squidgoddev.pocketpets
 version=1.0
 buildnumber=1
-imagePath=images/card
+imagePath=images/titleCard
