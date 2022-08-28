@@ -79,12 +79,12 @@ function Pet:update()
     end
 
     local _, accelCrankChange = pd.getCrankChange()
-    if math.abs(accelCrankChange) > 4 then
+    if math.abs(accelCrankChange) > 0 then
         if not self.pettingSound:isPlaying() and not self.foodList.listOut then
             self.pettingSound:play()
         end
         self.petting = true
-        PETS[SELECTED_PET].lastPet = pd.getTime()
+        PETS[SELECTED_PET].lastPet = pd.getSecondsSinceEpoch()
         Signals:notify("updateStatDisplay")
     else
         self.petting = false

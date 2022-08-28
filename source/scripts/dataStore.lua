@@ -38,7 +38,7 @@ PLANT_INVENTORY = {}
 for _, plant in ipairs(PLANTS_IN_ORDER) do
     PLANT_INVENTORY[plant] = {
         seeds = 0,
-        plant = 0
+        plant = 10
     }
 end
 PLANT_INVENTORY['turnip'].seeds = 2

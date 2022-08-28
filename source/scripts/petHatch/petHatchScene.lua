@@ -162,10 +162,10 @@ function PetHatchScene:createNewPet(name)
         type = self.petType,
         hunger = {
             level = 100,
-            lastTime = pd.getTime()
+            lastTime = pd.getSecondsSinceEpoch()
         },
-        lastPet = pd.getTime(),
-        lastGamePlay = pd.getTime(),
+        lastPet = pd.getSecondsSinceEpoch(),
+        lastGamePlay = pd.getSecondsSinceEpoch(),
         level = 0,
         xp = 0,
         plantDeck = {'turnip'}

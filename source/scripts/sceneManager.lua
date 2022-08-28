@@ -7,7 +7,7 @@ local gfx <const> = playdate.graphics
 class('SceneManager').extends()
 
 function SceneManager:init()
-    self.transitionWidth = 400
+    self.transitionWidth = 410
     self.transitionTime = 500
     self.transitioningIn = false
     self.transitionSound = pd.sound.sampleplayer.new("sound/UI/transitionWhoosh")
@@ -23,11 +23,6 @@ function SceneManager:switchScene(scene, ...)
         local musicOn = menuItems[1]:getValue()
         if musicOn then
             if not BgMusic:isPlaying() then
-                if IS_DAYTIME() then
-                    BgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
-                else
-                    BgMusic = pd.sound.sampleplayer.new("sound/cloud")
-                end
                 BgMusic:play(0)
             end
         end

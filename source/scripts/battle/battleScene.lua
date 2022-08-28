@@ -209,7 +209,7 @@ function BattleScene:update()
         self.resultsSprite:moveTo(self.resultsSprite.x, self.resultsAnimator:currentValue())
         if self.resultsAnimator:ended() then
             if pd.buttonJustPressed(pd.kButtonA) then
-                PETS[SELECTED_PET].lastGamePlay = pd.getTime()
+                PETS[SELECTED_PET].lastGamePlay = pd.getSecondsSinceEpoch()
                 self.battleMusic:stop()
                 SceneManager:switchScene(HomeScene)
             end

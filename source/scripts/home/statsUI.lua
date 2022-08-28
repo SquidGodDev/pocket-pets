@@ -17,17 +17,17 @@ function StatsUI:init(x, y)
 
     self.petTimeRate = 86400 -- 24 Hours
     self.gameTimeRate = 86400 -- 24 Hours
-    self.hungerCounterTime = 432 -- Decrease hunger by 100 in 12 hours
+    self.hungerTimerRate = 43 -- 12 Hours
     self.updateCounter = 0
 
     self:initializeStats()
-    self:updateHunger(0)
 
     Signals:subscribe("feed", self, function(_, _, amount)
         self:feed(amount)
     end)
 
     Signals:subscribe("updateStatDisplay", self, function()
+        self:calculatePetHappiness()
         self:updateStatsDisplay()
     end)
 
@@ -36,8 +36,8 @@ function StatsUI:init(x, y)
 end
 
 function StatsUI:update()
-    if self.updateCounter % (self.hungerCounterTime * 20) == 0 then
-        self:updateHunger(-1)
+    if self.updateCounter % 1000 == 0 then
+        self:updateHunger()
     end
     self.updateCounter += 1
 
@@ -54,16 +54,7 @@ end
 
 function StatsUI:initializeStats()
     local petStats = PETS[SELECTED_PET]
-    self.hunger = petStats.hunger.level
-    local secondsFromNow = pd.epochFromTime(pd.getTime())
-    local secondsFromThen = pd.epochFromTime(petStats.hunger.lastTime)
-    local hungerDiff = math.ceil((secondsFromNow - secondsFromThen) / self.hungerCounterTime)
-    self.hunger -= hungerDiff
-    if self.hunger <= 0 then
-        self.hunger = 0
-    end
-    PETS[SELECTED_PET].hunger.level = self.hunger
-
+    self:updateHunger()
     self:calculatePetHappiness()
 
     self.level = petStats.level
@@ -73,14 +64,14 @@ end
 function StatsUI:calculatePetHappiness()
     local petStats = PETS[SELECTED_PET]
 
-    local secondsFromNow = pd.epochFromTime(pd.getTime())
-    local secondsSinceLastPet = pd.epochFromTime(petStats.lastPet)
+    local secondsFromNow = pd.getSecondsSinceEpoch()
+    local secondsSinceLastPet = petStats.lastPet
     local petMultiplier = 1 - (secondsFromNow - secondsSinceLastPet) / self.petTimeRate
     if petMultiplier <= 0 then
         petMultiplier = 0
     end
 
-    local secondsSinceLastGame = pd.epochFromTime(petStats.lastGamePlay)
+    local secondsSinceLastGame = petStats.lastGamePlay
     local gameMultiplier = 1 - (secondsFromNow - secondsSinceLastGame) / self.gameTimeRate
     if gameMultiplier <= 0 then
         gameMultiplier = 0
@@ -110,15 +101,8 @@ function StatsUI:updateStatsDisplay()
     self:setImage(statDisplayImage)
 end
 
-function StatsUI:updateHunger(change)
-    self.hunger += change
-    if self.hunger <= 0 then
-        self.hunger = 0
-    elseif self.hunger >= 100 then
-        self.hunger = 100
-    end
-    PETS[SELECTED_PET].hunger.lastTime = pd.getTime()
-    PETS[SELECTED_PET].hunger.level = self.hunger
+function StatsUI:updateHunger()
+    self.hunger = self:calculateHunger()
 
     if self.hunger <= 20 then
         Signals:notify("sad", true)
@@ -131,5 +115,29 @@ function StatsUI:updateHunger(change)
 end
 
 function StatsUI:feed(amount)
-    self:updateHunger(amount)
+    local calculatedHunger = self:calculateHunger()
+    local newHunger = calculatedHunger + amount
+    if newHunger <= 0 then
+        newHunger = 0
+    elseif newHunger >= 100 then
+        newHunger = 100
+    end
+    PETS[SELECTED_PET].hunger.lastTime = pd.getSecondsSinceEpoch()
+    PETS[SELECTED_PET].hunger.level = newHunger
+    self.hunger = newHunger
+    self:updateHunger()
+end
+
+function StatsUI:calculateHunger()
+    local petFedTime = PETS[SELECTED_PET].hunger.lastTime
+    local petHungerBaseLevel = PETS[SELECTED_PET].hunger.level
+    local secondsFromNow = pd.getSecondsSinceEpoch()
+    local calculatedHunger = petHungerBaseLevel - math.floor((secondsFromNow - petFedTime) / self.hungerTimerRate * 100)
+    if calculatedHunger <= 0 then
+        calculatedHunger = 0
+    elseif calculatedHunger >= 100 then
+        calculatedHunger = 100
+    end
+
+    return calculatedHunger
 end

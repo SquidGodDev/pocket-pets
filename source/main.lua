@@ -32,10 +32,7 @@ else
     HomeScene()
 end
 
-BgMusic = pd.sound.sampleplayer.new("sound/cloud")
-if IS_DAYTIME() then
-    BgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
-end
+BgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
 
 BgMusic:play(0)
 
