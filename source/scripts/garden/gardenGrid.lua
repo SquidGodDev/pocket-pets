@@ -61,7 +61,7 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     self:add()
 
     self.updateCounter = 0
-    self.updateRate = 100
+    self.updateRate = 20
     self:updatePlants()
 
     self.plantSound = pd.sound.sampleplayer.new("sound/garden/plant")

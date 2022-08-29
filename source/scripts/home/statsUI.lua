@@ -17,7 +17,7 @@ function StatsUI:init(x, y)
 
     self.petTimeRate = 86400 -- 24 Hours
     self.gameTimeRate = 86400 -- 24 Hours
-    self.hungerTimerRate = 43 -- 12 Hours
+    self.hungerTimerRate = 43200 -- 12 Hours
     self.updateCounter = 0
 
     self:initializeStats()
@@ -36,7 +36,7 @@ function StatsUI:init(x, y)
 end
 
 function StatsUI:update()
-    if self.updateCounter % 1000 == 0 then
+    if self.updateCounter % 20 == 0 then
         self:updateHunger()
     end
     self.updateCounter += 1

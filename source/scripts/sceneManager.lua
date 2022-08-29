@@ -7,7 +7,7 @@ local gfx <const> = playdate.graphics
 class('SceneManager').extends()
 
 function SceneManager:init()
-    self.transitionWidth = 410
+    self.transitionWidth = 400
     self.transitionTime = 500
     self.transitioningIn = false
     self.transitionSound = pd.sound.sampleplayer.new("sound/UI/transitionWhoosh")
@@ -63,6 +63,7 @@ function SceneManager:update()
 
         self.transitionAnimator:ended()
         if self.transitioningIn and self.transitionAnimator:ended() then
+            gfx.clear(gfx.kColorBlack)
             self:loadNewScene()
         elseif self.transitionAnimator:ended() then
             self.transitionAnimator = nil
