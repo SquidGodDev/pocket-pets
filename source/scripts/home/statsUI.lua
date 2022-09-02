@@ -86,7 +86,7 @@ function StatsUI:updateStatsDisplay()
     local statDisplayImage = self.statusUIBackground:copy()
     gfx.pushContext(statDisplayImage)
         gfx.drawText("*Name: *" .. SELECTED_PET, 6, 3)
-        local meterWidth = 96
+        local meterWidth = 123
         local meterHeight = 13
         gfx.fillRect(26, 25, math.ceil(self.happiness / 100 * meterWidth), meterHeight)
         gfx.fillRect(26, 48, math.ceil(self.hunger / 100 * meterWidth), meterHeight)
