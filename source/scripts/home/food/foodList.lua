@@ -23,21 +23,28 @@ function FoodList:init()
     self.listview:setNumberOfRows(#self.rowToPlant)
     self.listviewObject.rowToPlant = self.rowToPlant
 
+    self.listviewObject.selectImage = gfx.image.new("images/garden/seedListSelector")
+
+    local plantImages = {}
+    for _, plantName in ipairs(PLANTS_IN_ORDER) do
+        local plantImage = gfx.image.new("images/garden/plants/" .. plantName)
+        plantImages[plantName] = plantImage
+    end
+    self.listviewObject.plantImages = plantImages
+
     self.animationTime = 300
 
     function self.listview:drawCell(section, row, column, selected, x, y, width, height)
         if selected then
             local selectOffset = 5
-            local selectImage = gfx.image.new("images/garden/seedListSelector")
-            selectImage:draw(x - selectOffset, y - selectOffset)
+            self.selectImage:draw(x - selectOffset, y - selectOffset)
         end
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRoundRect(x, y, width, height, 3)
         gfx.setColor(gfx.kColorBlack)
         local yOffset = (height - 16)/2
         local plantName = self.rowToPlant[row]
-        local plantImagePath = "images/garden/plants/" .. plantName
-        local plantImage = gfx.image.new(plantImagePath)
+        local plantImage = self.plantImages[plantName]
         gfx.setImageDrawMode(gfx.kDrawModeInverted)
         plantImage:draw(x + 4, y + yOffset)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
@@ -54,6 +61,7 @@ function FoodList:init()
 
     self.eatSound = pd.sound.sampleplayer.new("sound/home/chomp")
     self.slideSound = pd.sound.sampleplayer.new("sound/UI/transitionWhoosh")
+    self.clickSound = pd.sound.sampleplayer.new("sound/UI/mouseClick")
 end
 
 function FoodList:update()
@@ -90,8 +98,10 @@ function FoodList:update()
     if self.listOut then
         local crankTicks = pd.getCrankTicks(4)
         if crankTicks == -1 or pd.buttonJustPressed(pd.kButtonUp) then
+            self.clickSound:play()
             self.listview:selectPreviousRow(true)
         elseif crankTicks == 1 or pd.buttonJustPressed(pd.kButtonDown) then
+            self.clickSound:play()
             self.listview:selectNextRow(true)
         end
     end

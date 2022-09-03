@@ -21,21 +21,28 @@ function SeedList:init()
     self.listview:setNumberOfRows(#self.rowToPlant)
     self.listviewObject.rowToPlant = self.rowToPlant
 
+    self.listviewObject.selectImage = gfx.image.new("images/garden/seedListSelector")
+
+    local plantImages = {}
+    for _, plantName in ipairs(PLANTS_IN_ORDER) do
+        local plantImage = gfx.image.new("images/garden/plants/" .. plantName)
+        plantImages[plantName] = plantImage
+    end
+    self.listviewObject.plantImages = plantImages
+
     self.animationTime = 300
 
     function self.listview:drawCell(section, row, column, selected, x, y, width, height)
         if selected then
             local selectOffset = 5
-            local selectImage = gfx.image.new("images/garden/seedListSelector")
-            selectImage:draw(x - selectOffset, y - selectOffset)
+            self.selectImage:draw(x - selectOffset, y - selectOffset)
         end
         gfx.setColor(gfx.kColorWhite)
         gfx.fillRoundRect(x, y, width, height, 3)
         gfx.setColor(gfx.kColorBlack)
         local yOffset = (height - 16)/2
         local plantName = self.rowToPlant[row]
-        local plantImagePath = "images/garden/plants/" .. plantName
-        local plantImage = gfx.image.new(plantImagePath)
+        local plantImage = self.plantImages[plantName]
         gfx.setImageDrawMode(gfx.kDrawModeInverted)
         plantImage:draw(x + 4, y + yOffset)
         gfx.setImageDrawMode(gfx.kDrawModeCopy)
@@ -50,6 +57,8 @@ function SeedList:init()
     self:moveTo(400, 0)
     self:setZIndex(100)
     self:add()
+
+    self.clickSound = pd.sound.sampleplayer.new("sound/UI/mouseClick")
 end
 
 function SeedList:update()
@@ -70,25 +79,13 @@ function SeedList:update()
     end
 
     if self.listOut then
-        local selectedRow = self.listview:getSelectedRow()
-        local totalRows = self.listview:getNumberOfRowsInSection(1)
         if crankTicks == -1 or pd.buttonJustPressed(pd.kButtonUp) then
+            self.clickSound:play()
             self.listview:selectPreviousRow(true)
-            -- selectedRow -= 1
-            -- if selectedRow < 1 then
-            --     selectedRow = totalRows
-            -- end
-            -- self.listview:setSelectedRow(selectedRow)
-            -- self.listview:scrollToRow(selectedRow, true)
             Signals:notify("updateGardenDisplay")
         elseif crankTicks == 1 or pd.buttonJustPressed(pd.kButtonDown) then
+            self.clickSound:play()
             self.listview:selectNextRow(true)
-            -- selectedRow += 1
-            -- if selectedRow > totalRows then
-            --     selectedRow = 1
-            -- end
-            -- self.listview:setSelectedRow(selectedRow)
-            -- self.listview:scrollToRow(selectedRow, true)
             Signals:notify("updateGardenDisplay")
         end
     end

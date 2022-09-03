@@ -1,9 +1,12 @@
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
+local gardenData
+
 class('GardenGrid').extends(gfx.sprite)
 
 function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
+    gardenData = GARDEN_DATA
     self.seedList = seedList
 
     self.gridview = pd.ui.gridview.new(36, 36)
@@ -20,6 +23,12 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     self.gridviewObject = getmetatable(self.gridview)
     self.gridviewObject.plotImage = gfx.image.new("images/garden/gardenPlot")
     self.gridviewObject.selectorImage = gfx.image.new("images/garden/plotSelector")
+
+    local plantImages = {}
+    for _, plantName in ipairs(PLANTS_IN_ORDER) do
+        plantImages[plantName] = gfx.image.new("images/garden/plants/" .. plantName)
+    end
+    self.gridviewObject.plantImages = plantImages
 
     self.minCol = minCol
     self.maxCol = maxCol
@@ -44,11 +53,11 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
             self.selectorImage:draw(x - selectorOffset, y - selectorOffset)
         end
         self.plotImage:draw(x, y)
-        local plotData = GARDEN_DATA[row][column]
+        local plotData = gardenData[row][column]
         if plotData then
             if plotData.grown then
                 local plantName = plotData.plant
-                local plantImage = gfx.image.new("images/garden/plants/" .. plantName)
+                local plantImage = self.plantImages[plantName]
                 plantImage:draw(x + self.plantOffset, y + self.plantOffset)
             else
                 self.seedsImage:draw(x + self.plantOffset, y + self.plantOffset)
