@@ -174,8 +174,6 @@ function BattleScene:init()
         self.battleMusic:play(0)
     end
 
-    self.lost = false
-
     self.playerMoved = false
     local refreshImage = gfx.image.new(50, 50, gfx.kColorWhite)
     self.refreshSprite = gfx.sprite.new(refreshImage)
@@ -193,7 +191,7 @@ function BattleScene:update()
             self.enemyInstance = enemyConstructor(self)
             self.enemyEntranceAnimator = gfx.animator.new(1000, self.enemyBaseX + 100, self.enemyBaseX, pd.easingFunctions.inOutCubic)
             self.enemyHealthAnimator = gfx.animator.new(1000, 0, self.enemyInstance.maxHealth, pd.easingFunctions.inOutCubic)
-            self.gameState = 'loadNewEnemy'
+            self:changeGameState('loadNewEnemy')
             self.powerUpSound:play()
         end
     elseif self.gameState == 'loadNewEnemy' then
@@ -202,7 +200,7 @@ function BattleScene:update()
         self.enemyInstance:moveTo(self.enemyEntranceAnimator:currentValue(), self.enemyInstance.y)
         if self.enemyEntranceAnimator:ended() then
             self.enemyInstance:createMoveTimer()
-            self.gameState = 'battle'
+            self:changeGameState('battle')
         end
     elseif self.gameState == 'results' then
         self.playerSprite:moveTo(self.playerSprite.x, self.playerDeathAnimator:currentValue())
@@ -217,8 +215,15 @@ function BattleScene:update()
     end
 end
 
+function BattleScene:changeGameState(newGameState)
+    if self.gameState == 'results' then
+        return
+    end
+    self.gameState = newGameState
+end
+
 function BattleScene:levelDefeated()
-    self.gameState = 'levelTransition'
+    self:changeGameState('levelTransition')
     self.level += 1
     local levelText = "*Level: " .. self.level .. "*"
     local textWidth, textHeight = gfx.getTextSize(levelText)
@@ -411,7 +416,7 @@ function BattleScene:createWarning(x, y)
 end
 
 function BattleScene:damagePlayer(dmg, x, y)
-    if self.lost then
+    if self.gameState == 'results' then
         return
     end
 
@@ -431,9 +436,8 @@ function BattleScene:damagePlayer(dmg, x, y)
 end
 
 function BattleScene:playerDied()
-    self.lost = true
     self.loseSound:play()
-    self.gameState = 'results'
+    self:changeGameState('results')
     local resultsImageWidth, resultsImageHeight = 160, 110
     local resultsImage = gfx.image.new(resultsImageWidth, resultsImageHeight)
     if self.enemyInstance then
