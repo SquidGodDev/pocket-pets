@@ -20,4 +20,9 @@ function HomeScene:init()
     HomeButtons(foodList)
     local selectedPetType = PETS[SELECTED_PET].type
     Pet(120, 159, selectedPetType, foodList)
+
+    local menu = pd.getSystemMenu()
+    menu:addMenuItem("How to Play", function()
+        SceneManager:switchScene(ManualScene)
+    end)
 end

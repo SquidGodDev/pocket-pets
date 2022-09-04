@@ -8,10 +8,10 @@ import "CoreLibs/ui"
 import "CoreLibs/animator"
 import "CoreLibs/animation"
 import "CoreLibs/keyboard"
+import "CoreLibs/qrcode"
 
 import "scripts/home/homeScene"
 import "scripts/petHatch/petHatchScene"
-import "scripts/battle/battleScene"
 
 import "scripts/sceneManager"
 import "scripts/libraries/Signal"

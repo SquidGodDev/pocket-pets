@@ -17,6 +17,14 @@ function SceneManager:switchScene(scene, ...)
     if self.transitioningIn then
         return
     end
+    local menu = pd.getSystemMenu()
+    local menuItems = menu:getMenuItems()
+    for _, curMenuItem in ipairs(menuItems) do
+        if curMenuItem:getTitle() == "How to Play" then
+            menu:removeMenuItem(curMenuItem)
+        end
+    end
+
     if scene == HomeScene then
         self.transitionSound:play()
         local menuItems = pd.getSystemMenu():getMenuItems()

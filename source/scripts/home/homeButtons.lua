@@ -41,13 +41,6 @@ function HomeButtons:update()
     elseif pd.buttonJustPressed(pd.kButtonRight) then
         self:moveCursorRight()
     end
-
-    -- local crankTick = pd.getCrankTicks(3)
-    -- if crankTick == 1 then
-    --     self:moveCursorRight()
-    -- elseif crankTick == -1 then
-    --     self:moveCursorLeft()
-    -- end
 end
 
 function HomeButtons:moveCursorLeft()
