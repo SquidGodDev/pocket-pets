@@ -12,6 +12,7 @@ import "CoreLibs/qrcode"
 
 import "scripts/home/homeScene"
 import "scripts/petHatch/petHatchScene"
+import "scripts/fishing/fishingScene"
 
 import "scripts/sceneManager"
 import "scripts/libraries/Signal"
@@ -26,11 +27,12 @@ math.randomseed(pd.getSecondsSinceEpoch())
 SceneManager = SceneManager()
 Signals = Signal()
 
-if SELECTED_PET == "" then
-    PetHatchScene()
-else
-    HomeScene()
-end
+-- if SELECTED_PET == "" then
+--     PetHatchScene()
+-- else
+--     HomeScene()
+-- end
+FishingScene()
 
 BgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
 
