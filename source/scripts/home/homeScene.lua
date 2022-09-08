@@ -4,6 +4,8 @@ import "scripts/home/food/foodList"
 import "scripts/home/sky/sky"
 import "scripts/home/pets/pet"
 
+import "scripts/manual/manualScene"
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
