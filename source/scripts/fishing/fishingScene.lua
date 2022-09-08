@@ -102,7 +102,8 @@ function FishingScene:init()
 
     self.resultsSprite = gfx.sprite.new()
     self.resultsSprite:setZIndex(1000)
-    self.resultsSprite:moveTo(200, -80)
+    self.resultsSpriteBaseY = -40
+    self.resultsSprite:moveTo(200, self.resultsSpriteBaseY)
     self.resultsSprite:add()
     self.gemMultiplier = 2
 
@@ -116,7 +117,7 @@ end
 function FishingScene:update()
     if pd.buttonJustPressed(pd.kButtonB) and not self.showResults then
         self.showResults = true
-        self.resultsAnimator = gfx.animator.new(1000, -80, 120, pd.easingFunctions.inOutCubic)
+        self.resultsAnimator = gfx.animator.new(1000, self.resultsSpriteBaseY, 120, pd.easingFunctions.inOutCubic)
         GEMS += self.fishCount * self.gemMultiplier
         self:drawResults()
         self.scribbleSound:play()

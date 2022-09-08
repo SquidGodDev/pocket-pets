@@ -3,6 +3,7 @@ import "scripts/home/homeButtons"
 import "scripts/home/food/foodList"
 import "scripts/home/sky/sky"
 import "scripts/home/pets/pet"
+import "scripts/home/games/gameList"
 
 import "scripts/manual/manualScene"
 
@@ -19,7 +20,8 @@ function HomeScene:init()
     self:add()
     StatsUI(5, 5)
     local foodList = FoodList()
-    HomeButtons(foodList)
+    local gameList = GameList()
+    HomeButtons(foodList, gameList)
     local selectedPetType = PETS[SELECTED_PET].type
     Pet(120, 159, selectedPetType, foodList)
 
