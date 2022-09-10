@@ -5,8 +5,8 @@ local gfx <const> = pd.graphics
 
 class('Pet').extends(AnimatedSprite)
 
-function Pet:init(x, y, type, foodList)
-    local petImagetable = gfx.imagetable.new("images/pets/" .. type .. "-table-32-32")
+function Pet:init(x, y, foodList)
+    local petImagetable = GET_PET_IMAGETABLE(SELECTED_PET)
     Pet.super.init(self, petImagetable)
     self.foodList = foodList
 

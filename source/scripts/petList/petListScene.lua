@@ -90,9 +90,7 @@ function PetListScene:drawPetInfo()
     local petInfoImage = gfx.image.new(self.petInfoWidth, self.petInfoHeight)
     gfx.pushContext(petInfoImage)
         local selectedPet = self:getSelectedPet()
-        local selectedPetData = PETS[selectedPet]
-        local selectedPetType = selectedPetData.type
-        local petImageTable = gfx.imagetable.new("images/pets/"..selectedPetType.."-table-32-32")
+        local petImageTable = GET_PET_IMAGETABLE(selectedPet)
         local petImage = petImageTable:getImage(1)
         petImage:draw(95, 12)
         gfx.drawTextAligned("*"..selectedPet.."*", self.petInfoWidth / 2, 60, kTextAlignment.center)

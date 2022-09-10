@@ -12,12 +12,13 @@ import "CoreLibs/qrcode"
 
 import "scripts/home/homeScene"
 import "scripts/petHatch/petHatchScene"
-import "scripts/fishing/fishingScene"
 
 import "scripts/sceneManager"
 import "scripts/libraries/Signal"
 
 import "scripts/datastore"
+
+import "scripts/globals.lua"
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -27,12 +28,11 @@ math.randomseed(pd.getSecondsSinceEpoch())
 SceneManager = SceneManager()
 Signals = Signal()
 
--- if SELECTED_PET == "" then
---     PetHatchScene()
--- else
---     HomeScene()
--- end
-FishingScene()
+if SELECTED_PET == "" then
+    PetHatchScene()
+else
+    HomeScene()
+end
 
 BgMusic = pd.sound.sampleplayer.new("sound/endCreditsLofi")
 

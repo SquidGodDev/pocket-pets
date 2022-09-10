@@ -13,6 +13,16 @@ local gfx <const> = pd.graphics
 class('HomeScene').extends(gfx.sprite)
 
 function HomeScene:init()
+    for pet, petData in pairs(PETS) do
+        if petData.level > 15 and petData.petEvolution == nil then
+            if petData.hunger.level >= 50 then
+                petData.petEvolution = 1
+            else
+                petData.petEvolution = 2
+            end
+            PETS[pet] = petData
+        end
+    end
     Sky()
     local background = gfx.image.new("images/mainScreen/background")
     self:moveTo(200, 120)
@@ -22,8 +32,7 @@ function HomeScene:init()
     local foodList = FoodList()
     local gameList = GameList()
     HomeButtons(foodList, gameList)
-    local selectedPetType = PETS[SELECTED_PET].type
-    Pet(120, 159, selectedPetType, foodList)
+    Pet(120, 159, foodList)
 
     local menu = pd.getSystemMenu()
     menu:addMenuItem("How to Play", function()

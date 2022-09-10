@@ -39,8 +39,7 @@ function BattleScene:init()
     self.playerMaxHealth = 10 + PETS[SELECTED_PET].level * 5
     self.playerHealth = self.playerMaxHealth
 
-    local petType = PETS[SELECTED_PET].type
-    local petImageTable = gfx.imagetable.new("images/pets/"..petType.."-table-32-32")
+    local petImageTable = GET_PET_IMAGETABLE(SELECTED_PET)
     local petImage = petImageTable:getImage(1)
     self.playerSprite = gfx.sprite.new(petImage)
     self.playerSprite:setZIndex(100)

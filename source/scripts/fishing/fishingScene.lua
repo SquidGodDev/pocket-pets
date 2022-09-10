@@ -39,8 +39,7 @@ function FishingScene:init()
     dockSprite:moveTo(200, 222)
     dockSprite:add()
 
-    local curPetType = PETS[SELECTED_PET].type
-    FishingPet(68, 200, curPetType)
+    FishingPet(68, 200)
 
     self.fishingRodX = 250
     self.fishingRodY = 75
