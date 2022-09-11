@@ -116,7 +116,7 @@ function PetHatchScene:update()
                 self.eggShakeSound:play()
                 self.shakeAnimationFinished = true
                 self.fullEggSprite:remove()
-                local petImageTable = gfx.imagetable.new("images/pets/"..self.petType.."-table-32-32")
+                local petImageTable = gfx.imagetable.new("images/pets/baby-table-32-32")
                 local petImage = petImageTable:getImage(1)
                 self.petImageSprite:setImage(petImage)
                 self.petImageSprite:add()
