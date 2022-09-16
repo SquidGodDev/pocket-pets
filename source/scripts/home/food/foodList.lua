@@ -1,3 +1,5 @@
+-- Pretty much the same as seedList.lua. Check that file for more details
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 

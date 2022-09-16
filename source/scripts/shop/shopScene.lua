@@ -1,3 +1,7 @@
+-- This is the shop scene. There's not really anything technically challenging about this
+-- code, it's all a bunch of UI work and figuring out how to get the right data and display it.
+-- So much UI work... 😭 I really should make some sort of UI library...
+
 import "scripts/home/homeScene"
 import "scripts/petHatch/petHatchScene"
 

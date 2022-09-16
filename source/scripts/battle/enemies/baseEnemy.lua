@@ -1,3 +1,7 @@
+-- This is the generic enemy class. I can use this class and extend it, switching up some of the properties,
+-- and create a bunch of different enemies very easily. This is because this class defines all the building blocks,
+-- like the AI, attack patterns, health, and movement
+
 import "scripts/battle/playerAttackSprite"
 
 local pd <const> = playdate
@@ -8,6 +12,7 @@ class('BaseEnemy').extends(gfx.sprite)
 function BaseEnemy:init(battleScene, image)
     self.battleScene = battleScene
 
+    -- Some properties you can change when extending the class
     self.maxHealth = 100
     self.health = 0
 
@@ -32,6 +37,7 @@ function BaseEnemy:init(battleScene, image)
 end
 
 function BaseEnemy:update()
+    -- Handles the animation for attacking and when defeated
     if self.deathAnimator then
         self:moveTo(self.x, self.deathAnimator:currentValue())
         if self.deathAnimator:ended() then
@@ -45,6 +51,8 @@ function BaseEnemy:update()
     end
 end
 
+-- This is the "AI", basically either attacking or moving based on a timer.
+-- I can even define how likely the enemy is going to attack vs move
 function BaseEnemy:createMoveTimer()
     self.moveTimer = pd.timer.new(self.moveTime, function()
         local randVal = math.random()
@@ -57,6 +65,8 @@ function BaseEnemy:createMoveTimer()
     end)
 end
 
+-- Generic function for when the enemy gets hit. Handles the flashing on hit
+-- and death
 function BaseEnemy:damage(dmg)
     self.health -= dmg
     if self.health <= 0 then
@@ -82,6 +92,8 @@ function BaseEnemy:attack()
     -- Extend
 end
 
+-- Defines how the enemy can move. If the enemy is a "teleporter", then it can move anywhere.
+-- Otherwise, only to a random adjacent cell
 function BaseEnemy:move()
     local validMoves
     if self.row == 1 then
@@ -103,6 +115,10 @@ function BaseEnemy:move()
     self:moveTo(self.baseX, self.baseY + (self.row - 1) * self.gap)
 end
 
+-- The next several functions are a bunch of different attack patterns that I can use in
+-- the enemy subclasses to determine their attack pattern. I start off with a single cell
+-- attack, and the other functions can just use a combination of that. Ends up being quite
+-- elegant and easy to use - check out the individual enemies to see how I use it
 function BaseEnemy:singleAttack(dmg, x, y)
     self.battleScene:createWarning(x, y)
     pd.timer.new(1200, function()

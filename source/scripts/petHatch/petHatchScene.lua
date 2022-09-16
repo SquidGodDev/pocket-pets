@@ -1,3 +1,6 @@
+-- The scene that hatches the pets from an egg. First time using the keyboard - relatively intuitive.
+-- I used the sequence library to string a sequence of animations to create the egg hatching animation.
+
 import "scripts/libraries/Sequence"
 import "scripts/home/homeScene"
 

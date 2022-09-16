@@ -1,3 +1,8 @@
+-- So this is a super scrappy button system that I set up. It's honestly not very good - I should've
+-- made it more extensible and generic, but how it is right now is it's extremely rigid and a pain
+-- to add or remove buttons. I made it this way since I wanted the click animation, but that could've
+-- been done way better and easier...
+
 import "scripts/home/buttons/feedButton"
 import "scripts/home/buttons/gardenButton"
 import "scripts/home/buttons/shopButton"

@@ -1,3 +1,5 @@
+-- QR code is pretty simple
+
 import "scripts/libraries/Utilities"
 import "scripts/home/homeScene"
 

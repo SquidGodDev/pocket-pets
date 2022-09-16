@@ -1,7 +1,13 @@
+-- This is where all the data for the whole game is stored. I made it a bunch of global values, but I
+-- don't think that's a great approach. What would've been better is some sort of data class or object that stores
+-- the data that I can localize. Instead, since I'm grabbing global values, there's a performance cost
+
+-- This is to make sure the daily shop items stay the same each day
 -- === SHOP ===
 GEMS = 0
 DAILY_SHOP_ITEMS = nil
 
+-- This is to make it so you can only wish once per day
 -- === WISH ===
 WISH_GRANTED = false
 WISH_GRANT_TIME = {
@@ -10,11 +16,14 @@ WISH_GRANT_TIME = {
     day = 31
 }
 
+-- Just a convenience list to know which pets are available
 -- === PETS ===
 PET_TYPES = {'bat', 'buffBunny', 'cat', 'chicken', 'crab', 'dog', 'duck', 'hedgehog', 'snake', 'whale', 'wingedUnicorn'}
 
+-- The name of the pet that's used as a key into the PETS dictionary
 SELECTED_PET = ""
 
+-- Stores all the pet data. Hachi was a test pet I used. Good boy 🐕
 PETS = {}
 -- PETS = {
 --     Hachi = {
@@ -31,9 +40,11 @@ PETS = {}
 --     }
 -- }
 
+-- A convenient list of all the available plants
 -- === GARDEN ===
 PLANTS_IN_ORDER = {'turnip', 'eggplant', 'lettuce', 'cherry', 'potato', 'carrot', 'mushroom', 'pumpkin', 'pineapple', 'apple', 'pear', 'corn', 'strawberry', 'grape'}
 
+-- This keeps track of all the plants and seeds you have
 PLANT_INVENTORY = {}
 for _, plant in ipairs(PLANTS_IN_ORDER) do
     PLANT_INVENTORY[plant] = {
@@ -41,8 +52,10 @@ for _, plant in ipairs(PLANTS_IN_ORDER) do
         plant = 0
     }
 end
+-- You start off with 2 turnip seeds
 PLANT_INVENTORY['turnip'].seeds = 2
 
+-- Keeps track of all the seeds and plants in the garden
 GARDEN_DATA = {}
 for row=1,5 do
     GARDEN_DATA[row] = {}
@@ -51,6 +64,7 @@ for row=1,5 do
     end
 end
 
+-- This is the upgrade level of the garden
 GARDEN_LEVEL = 1
 
 -- === BATTLE ===
@@ -98,7 +112,7 @@ function playdate.gameWillSleep()
     saveGameData()
 end
 
-
+-- A list that defines the different sizes of the garden at different upgrade levels
 GARDEN_LEVELS = {
     {
         minRow = 3,

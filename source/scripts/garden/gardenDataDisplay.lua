@@ -1,3 +1,5 @@
+-- Not much to this file - just a bunch of UI stuff. Snooze fest 😴
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 

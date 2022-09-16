@@ -1,3 +1,8 @@
+-- This is the file that handles drawing and also calculating the pet stats like
+-- hunger, happiness, and level. I use a very simple heuristic to calculate the
+-- pet happiness, which if I put more time into I would probably make more complex.
+-- I also have a polling system to make sure to update the pet hunger, and subsequently
+-- happiness in this class as well.
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -22,6 +27,9 @@ function StatsUI:init(x, y)
 
     self:initializeStats()
 
+    -- I use the signals library to allow foodList.lua to send a signal to this
+    -- file to update the hunger, since it's kind a pain to link those files. Very
+    -- useful, but a lot of times if you architect your game better, you won't need signals 
     Signals:subscribe("feed", self, function(_, _, amount)
         self:feed(amount)
     end)
@@ -36,6 +44,7 @@ function StatsUI:init(x, y)
 end
 
 function StatsUI:update()
+    -- Polling to update the hunger
     if self.updateCounter % 20 == 0 then
         self:updateHunger()
     end
@@ -79,6 +88,7 @@ function StatsUI:calculatePetHappiness()
 
     local hungerMultiplier = self.hunger / 100
 
+    -- The equation for happiness. #deep
     self.happiness = math.ceil(self.petHappinessBase * petMultiplier + self.gameHappinessBase * gameMultiplier + self.hungerHappinessBase * hungerMultiplier)
 end
 
@@ -122,6 +132,11 @@ function StatsUI:feed(amount)
     elseif newHunger >= 100 then
         newHunger = 100
     end
+    -- An important thing I had to do is set the hunger to be dependent on the last time the pet ate
+    -- in order to accurately update hunger when polling, which leads to some quirks in how I have to
+    -- calculate the actual displayed hunger value. Basically, I have to keep track of two values, which
+    -- is the base hunger level, but also some calculation of the actual hunger amount since the actual
+    -- hunger will be less than the base hunger since time has passed. Confusing, I know...
     PETS[SELECTED_PET].hunger.lastTime = pd.getSecondsSinceEpoch()
     PETS[SELECTED_PET].hunger.level = newHunger
     self.hunger = newHunger

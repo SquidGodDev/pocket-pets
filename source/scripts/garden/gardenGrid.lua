@@ -1,3 +1,6 @@
+-- I used a gridview for the plot data. This file handles all the planting, drawing,
+-- growing, and harvesting of the plants
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
@@ -20,6 +23,9 @@ function GardenGrid:init(minRow, maxRow, minCol, maxCol, seedList)
     self.edgePadding = 10
     self.gridview:setCellPadding(5, 5, 3, 3)
 
+    -- This is a thing I've started doing, which is getting the metatable for the gridview
+    -- and storing data in there. That way, inside the gridview drawCell method, you can use
+    -- the self object and get data from it, which is pretty useful
     self.gridviewObject = getmetatable(self.gridview)
     self.gridviewObject.plotImage = gfx.image.new("images/garden/gardenPlot")
     self.gridviewObject.selectorImage = gfx.image.new("images/garden/plotSelector")
@@ -81,6 +87,8 @@ function GardenGrid:update()
     local _, row, column = self.gridview:getSelection()
     local forceRedrawGrid = false
 
+    -- I use a polling mechanism to make sure the plants update while you're in the
+    -- garden scene. It updates about once every second
     self.updateCounter += 1
     if self.updateCounter % self.updateRate == 0 then
         forceRedrawGrid = self:updatePlants()
@@ -94,6 +102,9 @@ function GardenGrid:update()
             if plantSeeds > 0 then
                 self.plantSound:play()
                 PLANT_INVENTORY[selectedPlant].seeds -= 1
+                -- So here is how I handle the plant growing, even when the playdate is sleeping.
+                -- I store the time based on irl time that the plant should be grown by, and I can
+                -- check the current time against that to see if it's past that time.
                 GARDEN_DATA[row][column] = {
                     plant = selectedPlant,
                     grown = false,
@@ -140,6 +151,10 @@ function GardenGrid:update()
     end
 end
 
+-- How I get the growth time is I use get seconds since epoch, which returns the
+-- number of seconds since the epoch time, which is January 1st, 1970, and then add
+-- the amount of seconds I want it to take to grow, which basically sets a time in the
+-- future that the plant should grow.
 function GardenGrid:getRandomGrowthTime()
     local minTime = 600
     local maxTime = 1200
@@ -154,6 +169,8 @@ function GardenGrid:updatePlants()
         for j=self.minCol, self.maxCol do
             local plotData = GARDEN_DATA[i][j]
             if plotData then
+                -- And here, I can just check if the current time is past the expected growth
+                -- time
                 if not plotData.grown and (secondsSinceEpoch >= plotData.growTime) then
                     GARDEN_DATA[i][j].grown = true
                     hasUpdated = true

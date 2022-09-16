@@ -7,6 +7,8 @@ function IS_DAYTIME()
     -- return true
 end
 
+-- Ok there was definitely a better way to do this, but I was lazy so I hacked
+-- this together to get the evolutions working
 function GET_PET_IMAGETABLE(pet)
     local petData = PETS[pet]
     local petType = petData.type

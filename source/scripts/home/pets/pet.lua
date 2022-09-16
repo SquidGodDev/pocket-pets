@@ -1,3 +1,7 @@
+-- I used the AnimatedSprite library to create a simple state machine to handle the pet walking around
+-- and animating. I also have a bunch of code for handling the emojis and stuff, but honestly it's such
+-- a big mess and not architected very well
+
 import "scripts/libraries/AnimatedSprite"
 
 local pd <const> = playdate

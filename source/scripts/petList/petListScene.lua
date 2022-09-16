@@ -1,3 +1,7 @@
+-- This is the scene that displays all your pets and allows you to switch out your pet.
+-- Just using a gridview for the list. It's pretty much all a bunch of UI work and simply
+-- displaying data.
+
 import "scripts/home/homeScene"
 
 local pd <const> = playdate

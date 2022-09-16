@@ -1,3 +1,6 @@
+-- The simple fishing mini-game scene. This was hacked together pretty quickly, so it's a bit messy.
+-- The code structure is somewhat similar to my other fishing game
+
 import "scripts/fishing/fishingPet"
 import "scripts/home/homeScene"
 
@@ -113,6 +116,9 @@ function FishingScene:init()
     self.fishCatchSound = pd.sound.sampleplayer.new("sound/fishing/FishCatch")
 end
 
+-- For the state management, I basically am just checking if animators have finished or not.
+-- I don't think that's really the best approach - it'd probably be better if I had explicit
+-- states like with the battle scene.
 function FishingScene:update()
     if pd.buttonJustPressed(pd.kButtonB) and not self.showResults then
         self.showResults = true

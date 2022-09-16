@@ -1,3 +1,5 @@
+-- Outdated scene manager script - check my tutorial for an updated version
+
 import "scripts/home/homeScene"
 import "scripts/battle/battleScene"
 

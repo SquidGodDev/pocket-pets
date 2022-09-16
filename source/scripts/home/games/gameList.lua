@@ -1,3 +1,5 @@
+-- Pretty much the same as seedList.lua. Check that file for more details
+
 import "scripts/battle/battleScene"
 import "scripts/fishing/fishingScene"
 

@@ -1,3 +1,12 @@
+-- This is the scene for the garden. Here's the file structure:
+
+--[[
+    gardenDataDisplay.lua - The display at the top of the scene that displays data
+    gadenGrid.lua - The actual garden plot grid
+    gardenScene.lua - This file
+    seedList.lua - The list that pulls out and shows the seeds available
+]]--
+
 import "scripts/garden/gardenGrid"
 import "scripts/garden/seedList"
 import "scripts/garden/GardenDataDisplay"

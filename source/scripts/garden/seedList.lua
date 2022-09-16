@@ -1,3 +1,7 @@
+-- This is the system that I use for creating the listviews. I basically copy pasted the code
+-- for the feeding list and also the game list, and I really should've created a more generic
+-- approach that I could reuse, but who knew I would use it again!!
+
 local pd <const> = playdate
 local gfx <const> = pd.graphics
 
@@ -23,6 +27,10 @@ function SeedList:init()
 
     self.listviewObject.selectImage = gfx.image.new("images/garden/seedListSelector")
 
+    -- This part is pretty important. I pre-render all the image and then cache them,
+    -- so I don't have to continously make a disk access to get the images. If you don't
+    -- do this and create the images in the drawCell callback, then it lags the crap
+    -- out of your list
     local plantImages = {}
     for _, plantName in ipairs(PLANTS_IN_ORDER) do
         local plantImage = gfx.image.new("images/garden/plants/" .. plantName)

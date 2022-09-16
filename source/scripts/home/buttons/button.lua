@@ -1,3 +1,5 @@
+-- The base class for the button. I don't like how I did this, so you should probably figure out
+-- a different way to handle UI in your game
 
 local pd <const> = playdate
 local gfx <const> = pd.graphics
@@ -17,6 +19,8 @@ function Button:init(x, y, foodList, petList, buttonImageTable)
 end
 
 function Button:update()
+    -- This is one of the issues, is that I need to disable inputs
+    -- for when the lists are out. I should've used input handlers
     local listOut = false
     if self.foodList and self.foodList.listOut then
         listOut = true

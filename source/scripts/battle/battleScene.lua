@@ -1,3 +1,18 @@
+-- This is the scene for the grid battler mini-game. So, this is a crazy mess because I hacked it together
+-- over the course of three days and it ended up being this almost 600 line file, but maybe you can learn
+-- something from it? Here's the file structure of this scene
+
+--[[
+battle/
+    enemies/
+        baseEnemy.lua - The base enemy class that allows me to easily create different enemies by extending it.
+                        I think this is a cool file to check out to see how to make easily extensible code
+    battleScene.lua - This file
+    playerAttackSprite.lua - A small helper sprite that displays the slashing attack animation.
+                             These helper classes are quite useful.
+    warningIcon.lua - A small helper sprite that displays the warning icon
+]]--
+
 import "scripts/home/homeScene"
 
 import "scripts/battle/playerAttackSprite"
@@ -21,7 +36,13 @@ local gfx <const> = pd.graphics
 
 class('BattleScene').extends(gfx.sprite)
 
+-- This is a chunky boy of an init function. Most of it is just general init stuff,
+-- but I set up the different grids here. I'm not using gridviews - I'm just manually
+-- drawing the grid since I found that easier to set up. Since the initialization is
+-- so long, it kind of causes the game to lag a bit on startup.
 function BattleScene:init()
+    -- Caching the plant images to improve performance. Probably should do this outside
+    -- of the init method since it doesn't really change
     self.plantImages = {}
     for i, plantType in ipairs(PLANTS_IN_ORDER) do
         local plantImage = gfx.image.new("images/garden/plants/" .. plantType)
@@ -29,16 +50,19 @@ function BattleScene:init()
         self.plantImages[plantType] = plantImage:scaledImage(2)
     end
 
+    -- Drawing the background
     local battleBackground = gfx.image.new("images/battle/battleBackground")
     self:moveTo(200, 120)
     self:setImage(battleBackground)
     self:add()
 
+    -- Initializing the player health based on pet level
     self.playerX = 2
     self.playerY = 2
     self.playerMaxHealth = 10 + PETS[SELECTED_PET].level * 5
     self.playerHealth = self.playerMaxHealth
 
+    -- Moving the player/pet sprite to where it needs to go
     local petImageTable = GET_PET_IMAGETABLE(SELECTED_PET)
     local petImage = petImageTable:getImage(1)
     self.playerSprite = gfx.sprite.new(petImage)
@@ -56,11 +80,14 @@ function BattleScene:init()
 
     self.enemyInstance = Cerberus(self)
 
+    -- I store which plants are in which grid space here
     self.gardenGrid = {}
     for i=1,3 do
         self.gardenGrid[i] = {}
     end
 
+    -- Each grid space has it's own dedicated sprite, and I
+    -- just swap out the image
     self.gardenSprites = {}
     for x=1,3 do
         self.gardenSprites[x] = {}
@@ -73,8 +100,11 @@ function BattleScene:init()
         end
     end
 
+    -- This is the last 10 plants the pet ate, which makes up their "deck"
     self.plantDeck = PETS[SELECTED_PET].plantDeck
 
+    -- Each spot in the queue has it's own dedicated sprite, like the garden,
+    -- and I just swap out the image
     self.queueBaseX = 15
     self.queueBaseY = 66
     self.queueGap = 42
@@ -87,12 +117,16 @@ function BattleScene:init()
         self.queueSprites[i] = curQueueSprite
     end
 
+    -- This is the data for what plants are actually in the queue
     self.plantQueue = {}
     for _=1,3 do
         self:addNewPlantToQueue()
     end
     self:drawQueue()
 
+    -- I just initialize how fast the plants grow here. Probably should do this
+    -- somewhere else since these values don't change so it's kind of a waste of
+    -- time to have to reinitialize it every time
     self.fastGrowth = 2000
     self.medGrowth = 4000
     self.slowGrowth = 6000
@@ -119,6 +153,7 @@ function BattleScene:init()
     seedImage:setInverted(true)
     self.seedImage = seedImage:scaledImage(2)
 
+    -- Initializing the healthbars
     self.playerHealthSprite = gfx.sprite.new()
     self.playerHealthSprite:setCenter(0, 0)
     self.playerHealthSprite:moveTo(53, 12)
@@ -142,6 +177,7 @@ function BattleScene:init()
     self:drawPlayerHealth()
     self:drawEnemyHealth()
 
+    -- Just creating the sprite for the level transition text here
     self.levelTransitionPrompt = gfx.sprite.new()
     self.levelTransitionPrompt:setZIndex(500)
     self.levelTransitionPrompt:moveTo(200, -10)
@@ -151,6 +187,7 @@ function BattleScene:init()
     self:levelDefeated()
     self.gameState = 'levelTransition'
 
+    -- The sprite for when you die and the results appear
     self.resultsSprite = gfx.sprite.new()
     self.resultsSprite:setZIndex(500)
     self.resultsSprite:moveTo(200, -50)
@@ -166,6 +203,10 @@ function BattleScene:init()
     self.healSound = pd.sound.sampleplayer.new("sound/battle/heal")
     self.growthSound = pd.sound.sampleplayer.new("sound/battle/growth")
 
+    -- I kind of hacked this together to make it if the music is disabled, the music for
+    -- the battle doesn't play, but this actually has a bug where if you enable music in
+    -- the middle of the battle, it doesn't turn on the right song. This is why I think
+    -- I would change the music option to adjust the volume instead
     self.battleMusic = pd.sound.sampleplayer.new("sound/battle/funnyBit")
     local menuItems = pd.getSystemMenu():getMenuItems()
     local musicOn = menuItems[1]:getValue()
@@ -173,6 +214,8 @@ function BattleScene:init()
         self.battleMusic:play(0)
     end
 
+    -- There's this weird bug where a ghost sprite is drawn at the beginning of the game,
+    -- and this is just a hack to fix it
     self.playerMoved = false
     local refreshImage = gfx.image.new(50, 50, gfx.kColorWhite)
     self.refreshSprite = gfx.sprite.new(refreshImage)
@@ -181,9 +224,12 @@ function BattleScene:init()
 end
 
 function BattleScene:update()
+    -- So I used states in this game to help manage the different game states. This is a pretty decent
+    -- approach to handling games like this to make sure things are and aren't happening when they should
     if self.gameState == 'battle' then
         self:battleUpdate()
     elseif self.gameState == 'levelTransition' then
+        -- This is when a level is defeated and what level you're on pops up
         self.levelTransitionPrompt:moveTo(self.levelTransitionAnimator:currentValue())
         if self.levelTransitionAnimator:ended() then
             local enemyConstructor = self:getEnemyConstructor()
@@ -194,6 +240,7 @@ function BattleScene:update()
             self.powerUpSound:play()
         end
     elseif self.gameState == 'loadNewEnemy' then
+        -- This is when the enemy is animated into the scene
         self.enemyInstance.health = self.enemyHealthAnimator:currentValue()
         self:drawEnemyHealth()
         self.enemyInstance:moveTo(self.enemyEntranceAnimator:currentValue(), self.enemyInstance.y)
@@ -202,6 +249,7 @@ function BattleScene:update()
             self:changeGameState('battle')
         end
     elseif self.gameState == 'results' then
+        -- This is when the player dies and the results appear
         self.playerSprite:moveTo(self.playerSprite.x, self.playerDeathAnimator:currentValue())
         self.resultsSprite:moveTo(self.resultsSprite.x, self.resultsAnimator:currentValue())
         if self.resultsAnimator:ended() then
@@ -214,6 +262,8 @@ function BattleScene:update()
     end
 end
 
+-- So I abstracted this into a method because apparently there was some bug with the states
+-- being messed up and the pet becoming invincible. Maybe this fixed it??
 function BattleScene:changeGameState(newGameState)
     if self.gameState == 'results' then
         return
@@ -221,6 +271,7 @@ function BattleScene:changeGameState(newGameState)
     self.gameState = newGameState
 end
 
+-- Just a function that animates the text and clears the garden. Nothing special
 function BattleScene:levelDefeated()
     self:changeGameState('levelTransition')
     self.level += 1
@@ -255,6 +306,8 @@ function BattleScene:levelDefeated()
     self:drawGarden()
 end
 
+-- So this is the main update loop for the battle. Pretty simple since
+-- everything is abstracted into different methods
 function BattleScene:battleUpdate()
     if pd.buttonJustPressed(pd.kButtonLeft) then
         self:movePlayer(-1, 0)
@@ -267,6 +320,7 @@ function BattleScene:battleUpdate()
     end
 
     if pd.buttonJustPressed(pd.kButtonA) then
+        -- Different actions based on if there's a plant in the plot or not
         local plotData = self.gardenGrid[self.playerX][self.playerY]
         if plotData then
             self:harvestPlant(plotData)
@@ -276,6 +330,7 @@ function BattleScene:battleUpdate()
     end
 end
 
+-- Just a helper method to help move the player around
 function BattleScene:movePlayer(x, y)
     if not self.playerMoved then
         self.playerMoved = true
@@ -298,6 +353,7 @@ function BattleScene:movePlayer(x, y)
     self.playerSprite:moveTo(self.gridBaseX + (self.playerX - 1) * self.gridGap, self.gridBaseY + (self.playerY - 1) * self.gridGap)
 end
 
+-- Helper functions to help draw the player and enemy health
 function BattleScene:drawPlayerHealth()
     local healthWidth, healthHeight = 122, 20
     local playerHealthImage = gfx.image.new(122, 20)
@@ -330,6 +386,9 @@ function BattleScene:drawEnemyHealth()
     self.enemyHealthText:setImage(enemyHealthTextImage)
 end
 
+-- So whenever the garden data get's updated, I call this method to handle drawing
+-- the garden to match the data in self.gardenGrid. Seperating the drawing and data
+-- like this was pretty helpful
 function BattleScene:drawGarden()
     for x=1,3 do
         for y=1,3 do
@@ -350,6 +409,10 @@ function BattleScene:drawGarden()
     end
 end
 
+-- So how I manage the seed growing is I use a timer and then create a callback that updates
+-- the data. That makes it pretty simple to handle the drawing and makes it self contained,
+-- and also improves performance since I don't have to use some sort of polling system to
+-- constantly loop through the grid and check if something should be grown
 function BattleScene:plantSeed()
     self.plantSound:play()
     local nextSeed = table.remove(self.plantQueue, 1)
@@ -376,6 +439,7 @@ function BattleScene:drawQueue()
     end
 end
 
+-- Just using a table as queue, as you do. Grabs a random plant from the "deck"
 function BattleScene:addNewPlantToQueue()
     if #self.plantDeck > 0 then
         local newPlant = self.plantDeck[math.random(#self.plantDeck)]
@@ -385,6 +449,7 @@ function BattleScene:addNewPlantToQueue()
     end
 end
 
+-- Using the attack sprite helper class
 function BattleScene:createAttackSprite(row)
     local attackX = self.enemyBaseX - 5
     local attackY = self.enemyBaseY + (row - 1) * self.enemyGap - 5
@@ -408,6 +473,7 @@ function BattleScene:damageEnemy(dmg, row)
     end
 end
 
+-- Using the warning icon helper class
 function BattleScene:createWarning(x, y)
     local warningX = self.gridBaseX + (x-1)*self.gridGap - 10
     local warningY = self.gridBaseY + (y-1)*self.gridGap - 9
@@ -434,6 +500,8 @@ function BattleScene:damagePlayer(dmg, x, y)
     end
 end
 
+-- Calculates gems and experienced earned here. I use a simple exponential scale
+-- to determine the xp required for each level
 function BattleScene:playerDied()
     self.loseSound:play()
     self:changeGameState('results')
@@ -474,6 +542,8 @@ function BattleScene:playerDied()
     self.resultsAnimator = gfx.animator.new(1200, self.resultsSprite.y, 120, pd.easingFunctions.inOutCubic)
 end
 
+-- So the next several methods define simple functions to do different actions. This makes
+-- it so I can just use a combination of this functions to create different plant effects.
 function BattleScene:attackSingle(dmg, delay)
     local attackRow = self.playerY
     pd.timer.new(delay, function()
@@ -535,6 +605,8 @@ function BattleScene:growRow()
     self:drawGarden()
 end
 
+-- In here, I define each of the effects of the different plants. You can see it's pretty simple
+-- since I just have to call the different functions I defined. The power of functions!!
 function BattleScene:harvestPlant(plotData)
     if not plotData.grown then
         return
@@ -578,6 +650,7 @@ function BattleScene:harvestPlant(plotData)
     self:drawGarden()
 end
 
+-- Choosing which enemy to spawn based on the level
 function BattleScene:getEnemyConstructor()
     local constructors
     if self.level <= 5 then

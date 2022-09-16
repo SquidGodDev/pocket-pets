@@ -1,3 +1,6 @@
+-- This is the wish scene. It's pretty simple, just some animations and a little
+-- bit of UI. I do check the time here, and see if you made your wish already.
+
 import "scripts/home/homeScene"
 
 local pd <const> = playdate
@@ -25,6 +28,7 @@ function WishScene:init()
 
     self.rewardSpriteAnimator = nil
 
+    -- This is how I check if you're on a new day or not
     local curTime = pd.getTime()
     if curTime.year ~= WISH_GRANT_TIME.year or curTime.month ~= WISH_GRANT_TIME.month or curTime.day ~= WISH_GRANT_TIME.day then
         WISH_GRANTED = false
