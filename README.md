@@ -9,29 +9,52 @@ Source code for my Playdate game "Pocket Pets!", a Tamagotchi inspired virtual p
 ## Project Structure
 - `scripts/`
     - `battle/`
-        - `battleScene.lua` - The scene for the grid battler mini-game. Check this file for more details on the other files.
+        - `enemies/`
+            - `baseEnemy.lua` - The base enemy class that allows me to easily create different enemies by extending it
+        - `battleScene.lua` - The scene for the grid battler mini-game
+        - `playerAttackSprite.lua` - A small helper sprite that displays the slashing attack animation
+        - `warningIcon.lua` - A small helper sprite that displays the warning icon
     - `fishing/`
-        - `fishingScene.lua` - The scene for the fishing mini-game. Check this file for more details on the other files.
+        - `fishingPet.lua` - The code for your pet walking around in the fishing mini-game
+        - `fishingScene.lua` - The scene for the fishing mini-game
     - `garden/`
-        - `gardenScene.lua` - The scene for the garden. Check this file for more details on the other files.
+        - `gardenDataDisplay.lua` - UI for the garden info at the top of the scene
+        - `gardenGrid.lua` - Draws the actual garden grid, seeds, and plants
+        - `gardenScene.lua` - The scene for the garden
+        - `seedList.lua` - Handles the seed list on the side
     - `home/`
-        - `homeScene.lua` - The scene for the main home screen. Check this file for more details on the other files.
+        - `buttons/`
+            - `button.lua` - The base button class to handle the buttons
+        - `food/`
+            - `foodList.lua` - Handles the list drawing for the food - it's basically the same as `seedList.lua` and `gameList.lua`
+        - `games/`
+            - `gameList.lua` - Handles the list for the available mini-games - it's basically the same as `seedList.lua` and `foodList.lua`
+        - `pets/`
+            - `pet.lua` - The base pet class that handles drawing the pet on the home screen and having them wander around - all the other pet files aren't actually used at all, so they should've been deleted
+        - `sky/`
+            - `cloudBanner.lua` - Old code that handled moving clouds - not used anymore
+            - `clouds.lua` - Also not used and should've been deleted
+            - `sky.lua` - Just draws the night sky
+            - `sun.lua` - Just handles drawing the sun or moon depending on the time of day
+        - `homeButtons.lua` - Handles the buttons on the home scene
+        - `homeScene.lua` - The scene for the main home screen
+        - `statsUI.lua` - Handles the pet stats on the top left
     - `libraries/`
-        - `AnimatedSprite.lua` - A library from Whitebrim that handles the animations for the pet in the home screen.
-        - `Sequence.lua` - A library from Nic Magnier that let's you string together animations. I just used it for the pet hatching scene.
-        - `Signal.lua` - A library from Dustin Mierau that allows you to send signals throughout your game that I used for miscellaneous data transfer.
-        - `Utilities.lua` - A library of utility functions that I'm building up. It only has one function in it right now 😅
+        - `AnimatedSprite.lua` - A library from Whitebrim that handles the animations for the pet in the home screen
+        - `Sequence.lua` - A library from Nic Magnier that let's you string together animations - I just used it for the pet hatching scene
+        - `Signal.lua` - A library from Dustin Mierau that allows you to send signals throughout your game that I used for miscellaneous data transfer
+        - `Utilities.lua` - A library of utility functions that I'm building up - it only has one function in it right now...
     - `manual/`
-        - `manualScene.lua` - The scene that handles drawing the QR code that links to the manual.
+        - `manualScene.lua` - The scene that handles drawing the QR code that links to the manual
     - `petHatch/`
-        - `petHatchScene.lua` - The scene that handles hatching a new pet.
+        - `petHatchScene.lua` - The scene that handles hatching a new pet
     - `petList/`
-        - `petListScene.lua` - The scene where you can see what pets you have and can switch them out.
+        - `petListScene.lua` - The scene where you can see what pets you have and can switch them out
     - `shop/`
-        - `shopScene.lua` - The vending machine shop scene.
+        - `shopScene.lua` - The vending machine shop scene
     - `wish/`
-        - `wishScene.lua` - The daily wish scene.
-    - `dataStore.lua` - Contains all the data that the game stores and handles saving and loading that data.
+        - `wishScene.lua` - The daily wish scene
+    - `dataStore.lua` - Contains all the data that the game stores and handles saving and loading that data
     - `globals.lua` - A couple global functions (checking for daytime and also getting the corresponding pet image tables)
     - `sceneManager.lua` - Manages switching between scenes
 
